@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickCart — Complete Your Subscription</title>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a;--bg:#fafaf8;--white:#fff;--off:#f4f3ef;
+  --accent:#ff4d00;--accent2:#ff6b35;--gold:#f5c842;
+  --green:#00875a;--border:#e8e6e0;--ink2:#4a4a4a;--ink3:#888;--ink4:#bbb;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;}
+.page{min-height:100vh;display:flex;flex-direction:column;}
+
+/* NAV */
+.pay-nav{background:var(--ink);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.pay-nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.pay-nav-logo span{color:var(--accent);}
+.pay-nav-step{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;}
+
+/* CONTENT */
+.pay-wrap{flex:1;display:grid;grid-template-columns:1fr 420px;max-width:960px;margin:0 auto;padding:48px 24px;gap:48px;width:100%;}
+
+/* LEFT: INFO */
+.pay-info{}
+.pay-badge{display:inline-flex;align-items:center;gap:6px;background:#f0faf4;border:1px solid #b2dfdb;padding:5px 12px;margin-bottom:24px;}
+.pay-badge span{font-size:10px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;}
+.pay-info h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;line-height:1.1;}
+.pay-info p{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:28px;}
+
+.trial-box{background:var(--ink);color:#fff;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;}
+.trial-box::before{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(255,77,0,.3),transparent);border-radius:50%;}
+.trial-box h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;}
+.trial-box p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.7;}
+.trial-countdown{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);font-weight:600;margin-top:8px;}
+
+.features-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.feat-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);}
+.feat-check{width:22px;height:22px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;flex-shrink:0;}
+
+.guarantee{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--off);border-left:3px solid var(--accent);}
+.guarantee .gu-ico{font-size:20px;flex-shrink:0;}
+.guarantee p{font-size:11px;color:var(--ink2);line-height:1.7;}
+
+/* RIGHT: PAYMENT CARD */
+.pay-card{background:var(--white);border:1px solid var(--border);overflow:hidden;align-self:start;position:sticky;top:24px;}
+.pay-card-hd{background:var(--ink);padding:20px 24px;}
+.pay-card-hd h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:3px;}
+.pay-card-hd p{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.04em;text-transform:uppercase;}
+.pay-card-body{padding:24px;}
+
+.plan-summary{background:var(--off);padding:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+.plan-summary .plan-name{font-size:13px;font-weight:700;}
+.plan-summary .plan-price{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--accent);}
+.plan-summary .plan-cycle{font-size:10px;color:var(--ink3);}
+
+.pay-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.pay-tab{flex:1;padding:10px;font-size:11px;font-weight:700;border:none;background:none;cursor:pointer;color:var(--ink3);border-bottom:2px solid transparent;transition:.15s;letter-spacing:.04em;text-transform:uppercase;}
+.pay-tab.on{color:var(--ink);border-bottom-color:var(--accent);}
+
+.pay-pane{display:none;}
+.pay-pane.on{display:block;}
+
+/* Trial pane */
+.trial-info{background:#f0faf4;border:1px solid #b2dfdb;padding:14px;margin-bottom:16px;}
+.trial-info h4{font-size:13px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.trial-info p{font-size:11px;color:var(--ink2);line-height:1.7;}
+.trial-timeline{display:flex;flex-direction:column;gap:0;margin:14px 0;}
+.tl-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.tl-row:last-child{border-bottom:none;}
+.tl-num{width:24px;height:24px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;}
+.tl-text{font-size:12px;color:var(--ink2);line-height:1.6;}
+.tl-text strong{color:var(--ink);display:block;margin-bottom:1px;}
+
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:5px;}
+.ff input{width:100%;border:1.5px solid var(--border);padding:10px 12px;font-size:13px;outline:none;transition:.15s;background:#fff;color:var(--ink);font-family:inherit;}
+.ff input:focus{border-color:var(--ink);}
+
+.pay-cta{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;}
+.pay-cta:hover{background:var(--accent2);}
+.pay-cta.secondary{background:var(--ink);margin-top:0;}
+.pay-cta.secondary:hover{background:#333;}
+
+.skip-link{text-align:center;font-size:11px;color:var(--ink3);padding:8px 0;}
+.skip-link a{color:var(--ink3);text-decoration:underline;cursor:pointer;}
+.skip-link a:hover{color:var(--ink);}
+
+.secure-badges{display:flex;justify-content:center;gap:14px;padding-top:14px;border-top:1px solid var(--border);margin-top:6px;}
+.sec-badge{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--ink3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+
+.err-msg{display:none;background:#fce4e4;color:#c00;padding:8px 12px;font-size:11px;font-weight:600;margin-bottom:12px;}
+.suc-msg{display:none;background:#f0faf4;border:1px solid #b2dfdb;color:var(--green);padding:12px;font-size:12px;font-weight:600;margin-bottom:12px;}
+
+/* SUCCESS OVERLAY */
+.success-overlay{position:fixed;inset:0;background:var(--ink);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:#fff;text-align:center;padding:24px;}
+.success-overlay.show{display:flex;}
+.success-ico{font-size:64px;animation:pop .5s ease;}
+@keyframes pop{0%{transform:scale(0);}80%{transform:scale(1.15);}100%{transform:scale(1);}}
+.success-overlay h2{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.02em;}
+.success-overlay p{font-size:14px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.7;}
+.success-overlay .go-btn{background:var(--accent);color:#fff;border:none;padding:14px 36px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;letter-spacing:-.01em;}
+
+@media(max-width:768px){
+  .pay-nav{padding:0 20px;}
+  .pay-wrap{grid-template-columns:1fr;padding:24px 16px;gap:24px;}
+  .pay-card{position:static;}
+  .pay-info h1{font-size:28px;}
+}
+
+/* ══ RESPONSIVE — Payment ═══════════════════════════════════════════ */
+@media(max-width:768px){
+  .pay-nav{padding:0 16px;height:52px;}
+  .pay-nav-step{display:none;}
+  .pay-wrap{
+    grid-template-columns:1fr!important;
+    padding:20px 14px;gap:20px;
+  }
+  .pay-card{position:static!important;}
+  .pay-info h1{font-size:26px;}
+  .pay-tab{font-size:10px;padding:8px;}
+  .trial-box{padding:18px;}
+  .tl-row{gap:8px;}
+  .ff input{font-size:16px!important;} /* prevent iOS zoom */
+  .pay-cta{font-size:12px;padding:13px;}
+  .secure-badges{flex-wrap:wrap;gap:10px;}
+}
+@media(max-width:480px){
+  .pay-info h1{font-size:22px;}
+  .pay-wrap{padding:14px 12px;}
+  .plan-summary{flex-direction:column;gap:6px;text-align:center;}
+}
+
+</style>
+<script src="qc-db.js"></script>
+</head>
+<body>
+<div class="page">
+  <!-- NAV -->
+  <nav class="pay-nav">
+    <div class="pay-nav-logo">Quick<span>Cart</span></div>
+    <div class="pay-nav-step">Step 2 of 2 — Activate Subscription</div>
+  </nav>
+
+  <div class="pay-wrap">
+    <!-- LEFT INFO -->
+    <div class="pay-info">
+      <div class="pay-badge"><span>✅ Store Created</span></div>
+      <h1>One last step to unlock your store</h1>
+      <p>Your store is ready! Start your 14-day free trial — your card won't be charged until the trial ends. Cancel anytime before then.</p>
+
+      <div class="trial-box">
+        <h3>🎉 14-Day Free Trial</h3>
+        <p>Full access to all features. No restrictions. No charge today.</p>
+        <div class="trial-countdown" id="trial-ends-label">Trial ends: —</div>
+      </div>
+
+      <div class="features-list">
+        <div class="feat-item"><div class="feat-check">✓</div>Unlimited products & POS terminal</div>
+        <div class="feat-item"><div class="feat-check">✓</div>Online store with custom domain</div>
+        <div class="feat-item"><div class="feat-check">✓</div>Inventory, accounting & analytics</div>
+        <div class="feat-item"><div class="feat-check">✓</div>WhatsApp marketing & AI scraper</div>
+        <div class="feat-item"><div class="feat-check">✓</div>Priority support (WhatsApp + chat)</div>
+      </div>
+
+      <div class="guarantee">
+        <div class="gu-ico">🔒</div>
+        <p><strong>Cancel anytime.</strong> No questions asked. If you cancel before your trial ends, you won't be charged a single naira. Your data stays safe for 30 days.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: PAYMENT CARD -->
+    <div class="pay-card">
+      <div class="pay-card-hd">
+        <h2>Activate Your Plan</h2>
+        <p id="card-plan-label">Starter Plan — ₦31,600/month</p>
+      </div>
+      <div class="pay-card-body">
+        <div class="plan-summary">
+          <div>
+            <div class="plan-name" id="summary-plan-name">Starter Plan</div>
+            <div class="plan-cycle">Auto-renews monthly after trial</div>
+          </div>
+          <div>
+            <div class="plan-price" id="summary-plan-price">₦31,600</div>
+            <div class="plan-cycle" style="text-align:right;">/month</div>
+          </div>
+        </div>
+
+        <div class="pay-tabs">
+          <button class="pay-tab on" onclick="payTab('trial',this)">🎁 Free Trial</button>
+          <button class="pay-tab" onclick="payTab('pay',this)">💳 Pay Now</button>
+        </div>
+
+        <!-- TRIAL PANE -->
+        <div class="pay-pane on" id="pane-trial">
+          <div class="trial-info">
+            <h4>How the trial works</h4>
+            <p>Add your card today. You get full access free for 14 days. We'll only charge after your trial ends.</p>
+          </div>
+          <div class="trial-timeline">
+            <div class="tl-row"><div class="tl-num">1</div><div class="tl-text"><strong>Today</strong>Card saved securely · No charge</div></div>
+            <div class="tl-row"><div class="tl-num">14</div><div class="tl-text"><strong>Day 14</strong>Trial ends · Auto-charge begins</div></div>
+            <div class="tl-row"><div class="tl-num">∞</div><div class="tl-text"><strong>Cancel anytime</strong>No charge if cancelled before Day 14</div></div>
+          </div>
+          <div class="err-msg" id="trial-err"></div>
+          <div class="suc-msg" id="trial-suc"></div>
+          <button class="pay-cta" onclick="startTrialWithCard()">🚀 Start Free Trial — Add Card →</button>
+          <div style="background:#fff5f0;border:1px solid rgba(255,77,0,.2);padding:8px 12px;font-size:11px;color:var(--accent);text-align:center;font-weight:600;">⚡ Card required to activate your store. No charge today.</div>
+        </div>
+
+        <!-- PAY NOW PANE -->
+        <div class="pay-pane" id="pane-pay">
+          <div style="background:var(--off);padding:10px 12px;font-size:11px;color:var(--ink2);margin-bottom:16px;">
+            💡 Pay immediately and skip the trial. Your plan starts today.
+          </div>
+          <div class="err-msg" id="pay-err"></div>
+          <div class="suc-msg" id="pay-suc"></div>
+          <button class="pay-cta secondary" onclick="payNow()">💳 Pay ₦<span id="pay-now-amount">31,600</span> Now →</button>
+          <div style="background:#f5f5f5;padding:8px 12px;font-size:11px;color:#555;text-align:center;">Or <a onclick="payTab('trial',document.querySelector('.pay-tab'))" style="color:var(--accent);font-weight:700;cursor:pointer;">start free trial with card →</a></div>
+        </div>
+
+        <div class="secure-badges">
+          <div class="sec-badge">🔒 SSL Secured</div>
+          <div class="sec-badge">✅ Paystack</div>
+          <div class="sec-badge">🇳🇬 CBN Compliant</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-ico">🎉</div>
+  <h2>You're all set!</h2>
+  <p id="success-msg">Your free trial has started. Full access activated. Let's build your store!</p>
+  <button class="go-btn" onclick="goToDashboard()">Go to Dashboard →</button>
+</div>
+
+<script>
+var FIREBASE_ROOT='https://sneakerai-c96f0-default-rtdb.firebaseio.com';
+var USERS_DB=FIREBASE_ROOT+'/users';
+var PAYSTACK_PUB_KEY='pk_live_1d3267660c9ae41a643c52a2d04493ea4e0e98ca';
+
+// Pricing (300% increase applied)
+var PLANS={
+  starter:{name:'Starter',monthly:31600,annual:303360,label:'₦31,600/month'},
+  pro:{name:'Pro',monthly:66360,annual:637056,label:'₦66,360/month'},
+  enterprise:{name:'Enterprise',monthly:180000,annual:1728000,label:'₦180,000/month'}
+};
+
+var _user=null,_plan='starter',_userKey='';
+
+function init(){
+  // Read user info from localStorage (set during registration)
+  var username=localStorage.getItem('qc_logged_user')||'';
+  var plan=localStorage.getItem('qc_sub_plan')||'starter';
+  var email=localStorage.getItem('qc_sub_email')||'';
+  var biz=localStorage.getItem('qc_biz_name')||'Your Store';
+
+  _plan=plan;
+  var planData=PLANS[plan]||PLANS.starter;
+
+  // Update UI with plan info
+  document.getElementById('card-plan-label').textContent=planData.name+' Plan — '+planData.label;
+  document.getElementById('summary-plan-name').textContent=planData.name+' Plan';
+  document.getElementById('summary-plan-price').textContent='₦'+planData.monthly.toLocaleString('en-NG');
+  document.getElementById('pay-now-amount').textContent=planData.monthly.toLocaleString('en-NG');
+
+  // Trial end date
+  var trialEnd=new Date(Date.now()+14*86400000);
+  document.getElementById('trial-ends-label').textContent='Trial ends: '+trialEnd.toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+
+  // Load from Paystack settings
+  fetch(QCDB.baseFor(username)+'/settings/paystack_key.json')
+    .then(function(r){return r.json();})
+    .then(function(k){if(k&&typeof k==='string')PAYSTACK_PUB_KEY=k;})
+    .catch(function(){});
+}
+
+function payTab(name,el){
+  document.querySelectorAll('.pay-tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.pay-pane').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('pane-'+name).classList.add('on');
+}
+
+function startTrialWithCard(){
+  var email=localStorage.getItem('qc_sub_email')||'';
+  if(!email){
+    showErr('trial-err','Please complete registration first.');return;
+  }
+  var planData=PLANS[_plan]||PLANS.starter;
+  var ref='TRIAL-'+Date.now().toString(36).toUpperCase();
+  // Use Paystack with authorization (₦50 charge to validate card, then refund)
+  // In production, use Paystack's tokenization endpoint
+  try{
+    var handler=PaystackPop.setup({
+      key:PAYSTACK_PUB_KEY,
+      email:email,
+      amount:5000, // ₦50 card validation charge (refunded)
+      currency:'NGN',
+      ref:ref,
+      label:'Card Authorization — QuickCart '+planData.name,
+      metadata:{plan:_plan,type:'trial_activation',username:localStorage.getItem('qc_logged_user')||''},
+      callback:function(response){
+        activateTrial(response.reference);
+      },
+      onClose:function(){
+        // User closed without completing
+      }
+    });
+    handler.openIframe();
+  }catch(e){
+    showErr('trial-err','Payment gateway error. Please try again.');
+  }
+}
+
+async function activateTrial(ref){
+  var username=localStorage.getItem('qc_logged_user')||'';
+  var email=localStorage.getItem('qc_sub_email')||'';
+  var trialEnd=new Date(Date.now()+14*86400000).toISOString();
+  try{
+    // Update user record in Firebase
+    var r=await fetch(USERS_DB+'.json');
+    var data=await r.json();
+    if(data){
+      var keys=Object.keys(data);
+      for(var i=0;i<keys.length;i++){
+        var u=data[keys[i]];
+        if((u.username===username||u.email===email)){
+          _userKey=keys[i];
+          var update=Object.assign({},u,{
+            status:'trial',trialEnds:trialEnd,
+            cardRef:ref,cardAdded:new Date().toISOString()
+          });
+          await fetch(USERS_DB+'/'+keys[i]+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(update)});
+          break;
+        }
+      }
+    }
+    showSuccess();
+    document.getElementById('success-msg').textContent='Your 14-day free trial has started. Full access activated. Welcome to QuickCart!';
+  }catch(e){
+    showErr('trial-err','Activation failed. Please try again.');
+  }
+}
+
+function payNow(){
+  var email=localStorage.getItem('qc_sub_email')||'';
+  if(!email){showErr('pay-err','Please complete registration first.');return;}
+  var planData=PLANS[_plan]||PLANS.starter;
+  var ref='SUB-'+Date.now().toString(36).toUpperCase();
+  try{
+    var handler=PaystackPop.setup({
+      key:PAYSTACK_PUB_KEY,
+      email:email,
+      amount:planData.monthly*100,
+      currency:'NGN',
+      ref:ref,
+      label:'QuickCart '+planData.name+' — Monthly',
+      metadata:{plan:_plan,type:'direct_payment',username:localStorage.getItem('qc_logged_user')||''},
+      callback:function(response){
+        activateDirectSubscription(response.reference,planData.monthly);
+      },
+      onClose:function(){}
+    });
+    handler.openIframe();
+  }catch(e){
+    showErr('pay-err','Payment gateway error. Please try again.');
+  }
+}
+
+async function activateDirectSubscription(ref,amount){
+  var username=localStorage.getItem('qc_logged_user')||'';
+  var email=localStorage.getItem('qc_sub_email')||'';
+  var subExpires=new Date(Date.now()+30*86400000).toISOString();
+  try{
+    var r=await fetch(USERS_DB+'.json');
+    var data=await r.json();
+    if(data){
+      var keys=Object.keys(data);
+      for(var i=0;i<keys.length;i++){
+        var u=data[keys[i]];
+        if(u.username===username||u.email===email){
+          var update=Object.assign({},u,{
+            status:'active',subExpires:subExpires,
+            lastPaymentRef:ref,lastPaymentAmount:amount,
+            lastPaymentDate:new Date().toISOString()
+          });
+          await fetch(USERS_DB+'/'+keys[i]+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(update)});
+          break;
+        }
+      }
+    }
+    showSuccess();
+    document.getElementById('success-msg').textContent='Payment confirmed! Your '+PLANS[_plan].name+' plan is now active. Let\'s grow your business!';
+  }catch(e){
+    showErr('pay-err','Subscription activation failed. Please contact support.');
+  }
+}
+
+async function skipToFreeTrial(){
+  // Allow user to skip and go to dashboard with trial status
+  var username=localStorage.getItem('qc_logged_user')||'';
+  var email=localStorage.getItem('qc_sub_email')||'';
+  if(!username){qcGo('/dashboard');return;}
+  var trialEnd=new Date(Date.now()+14*86400000).toISOString();
+  try{
+    var r=await fetch(USERS_DB+'.json');var data=await r.json();
+    if(data){
+      var keys=Object.keys(data);
+      for(var i=0;i<keys.length;i++){
+        var u=data[keys[i]];
+        if(u.username===username||u.email===email){
+          if(!u.trialEnds){
+            await fetch(USERS_DB+'/'+keys[i]+'/trialEnds.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(trialEnd)});
+          }
+          break;
+        }
+      }
+    }
+  }catch(e){}
+  qcGo('/dashboard');
+}
+
+function showSuccess(){
+  document.getElementById('success-overlay').classList.add('show');
+}
+
+function goToDashboard(){
+  qcGo('/dashboard');
+}
+
+function showErr(id,msg){
+  var el=document.getElementById(id);
+  if(el){el.textContent=msg;el.style.display='block';setTimeout(function(){el.style.display='none';},5000);}
+}
+
+function qcGo(path){
+  if(window.parent&&window.parent!==window&&window.parent.qcNavigate){
+    window.parent.qcNavigate(path);
+  }else{
+    var map={'/dashboard':'admin.html','/':'landing.html'};
+    window.location.href=map[path]||'admin.html';
+  }
+}
+
+// Listen for messages from parent router
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.action==='openPayment'){
+    if(e.data.plan)localStorage.setItem('qc_sub_plan',e.data.plan);
+    init();
+  }
+});
+
+// Tell parent our title
+if(window.parent&&window.parent!==window)window.parent.postMessage({title:'Activate Subscription'},'*');
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

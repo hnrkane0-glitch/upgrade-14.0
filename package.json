@@ -1,0 +1,9 @@
+{
+  "name": "quickcart-nigeria",
+  "version": "3.1.0",
+  "description": "QuickCart \u2014 Nigeria's smart commerce platform (store, POS, inventory, accounting)",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

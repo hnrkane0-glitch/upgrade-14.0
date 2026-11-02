@@ -1,0 +1,44 @@
+{
+  "name": "QuickCart Nigeria",
+  "short_name": "QuickCart",
+  "description": "Launch your online store, run your POS and manage inventory — built for Nigerian businesses",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#ff4500",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "shopping",
+    "finance"
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "All Deals",
+      "url": "/?view=deals",
+      "description": "Browse all deals"
+    },
+    {
+      "name": "Phones",
+      "url": "/?view=phones",
+      "description": "Smartphone deals"
+    },
+    {
+      "name": "POS Terminal",
+      "url": "/pos",
+      "description": "Open the point of sale"
+    }
+  ]
+}

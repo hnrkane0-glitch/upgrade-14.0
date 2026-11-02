@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a Deal - QuickCart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Space Grotesk',sans-serif;background:#f8f8f6;color:#0d0d0d;}
+    .nav{background:#0d0d0d;padding:16px 24px;position:sticky;top:0;z-index:100;}
+    .nav-in{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .logo{color:#fff;font-size:24px;font-weight:700;}
+    .logo span{color:#ff4500;}
+    .nav a{color:#fff;text-decoration:none;font-size:14px;}
+    .container{max-width:600px;margin:40px auto;padding:0 20px;}
+    .card{background:#fff;border-radius:12px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,0.07);}
+    h1{font-size:28px;margin-bottom:8px;}
+    .sub{color:#888;margin-bottom:32px;}
+    .form-group{margin-bottom:20px;}
+    label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;color:#888;margin-bottom:4px;}
+    input,select,textarea{width:100%;padding:12px;border:1.5px solid #e4e4e0;border-radius:8px;font-family:inherit;font-size:14px;background:#fff;}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#ff4500;}
+    .hint{font-size:11px;color:#aaa;margin-top:4px;}
+    button{background:#ff4500;color:#fff;border:none;padding:14px 28px;border-radius:8px;font-weight:600;cursor:pointer;font-size:16px;width:100%;}
+    button:hover{background:#e03c00;}
+    button:disabled{background:#ccc;cursor:not-allowed;}
+    .reward-box{background:#f0f0ee;border-radius:8px;padding:16px;margin:24px 0;display:flex;align-items:center;gap:12px;}
+    .reward-emoji{font-size:32px;}
+    .reward-text{font-size:14px;color:#444;}
+    .reward-text strong{color:#ff4500;font-size:18px;}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d0d0d;color:#fff;padding:12px 24px;border-radius:8px;display:none;z-index:1000;}
+    .loading{display:none;text-align:center;margin-top:20px;}
+    .loading.show{display:block;}
+</style>
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-in">
+            <div class="logo"><span>Quick</span>Cart</div>
+            <a href="index.html">← Back to Deals</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+    <div style="background:#f0f0ee;border-radius:8px;padding:13px 16px;margin-bottom:20px;font-size:12px;color:#555;line-height:1.7;">
+      📋 <strong>Submission rules:</strong> Only submit real, working deals from legitimate Nigerian stores. No expired or fake prices. Verified deals go live within 24 hours.
+    </div>
+            <h1>💰 Submit a Deal</h1>
+            <div class="sub">Found a great price? Share it with the community and earn rewards!</div>
+            
+            <div class="reward-box">
+                <span class="reward-emoji">🏆</span>
+                <span class="reward-text"><strong>Earn ₦500</strong> for every approved deal that gets 10+ clicks! 💸 Top submitters earn ₦5,000+ monthly.</span>
+            </div>
+
+            <form id="submitForm">
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="name" required placeholder="e.g. iPhone 17 Pro Max">
+                </div>
+
+                <div class="form-group">
+                    <label>Brand *</label>
+                    <input type="text" id="brand" required placeholder="Apple, Nike, Samsung...">
+                </div>
+
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="category" required>
+                        <option value="">Select category</option>
+                        <option value="Sneakers">👟 Sneakers</option>
+                        <option value="Smartphones">📱 Smartphones</option>
+                        <option value="Laptops">💻 Laptops</option>
+                        <option value="Gaming">🎮 Gaming</option>
+                        <option value="Electronics">🔌 Electronics</option>
+                        <option value="Accessories">🎧 Accessories</option>
+                        <option value="Sneakers">👟 Sneakers</option>
+                        <option value="Fashion">👔 Fashion</option>
+                        <option value="Appliances">🏠 Appliances</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Price (₦) *</label>
+                    <input type="number" id="price" required placeholder="89500" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Original Price (₦) - optional</label>
+                    <input type="number" id="originalPrice" placeholder="115000" min="0">
+                    <div class="hint">Shows discount percentage if provided</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Store *</label>
+                    <select id="store" required>
+                        <option value="">Select store</option>
+                        <option value="Jumia">Jumia</option>
+                        <option value="Konga">Konga</option>
+                        <option value="Slot">Slot</option>
+                        <option value="3C Hub">3C Hub</option>
+                        <option value="Garmspot">Garmspot</option>
+                        <option value="Jiji">Jiji</option>
+                        <option value="Pointek">Pointek</option>
+                        <option value="Fouani">Fouani Store</option>
+                        <option value="Kara">Kara Nigeria</option>
+                        <option value="Sims">Sims Nigeria</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Product URL *</label>
+                    <input type="url" id="url" required placeholder="https://...">
+                    <div class="hint">Paste the direct link to the product</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL - optional</label>
+                    <input type="url" id="image" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label>Your Email - for reward tracking</label>
+                    <input type="email" id="email" placeholder="you@example.com">
+                    <div class="hint">We'll notify you if your deal is approved</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Sizes (comma separated) - optional</label>
+                    <input type="text" id="sizes" placeholder="40,41,42 or 128GB,256GB">
+                </div>
+
+                <button type="submit" id="submitBtn">🚀 Submit Deal for Review</button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <p>Submitting your deal...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const PENDING_DB = "https://sneakerai-c96f0-default-rtdb.firebaseio.com/pending-deals";
+
+        document.getElementById('submitForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const brand = document.getElementById('brand').value.trim();
+            const category = document.getElementById('category').value;
+            const price = Number(document.getElementById('price').value);
+            const originalPrice = document.getElementById('originalPrice').value ? Number(document.getElementById('originalPrice').value) : null;
+            const store = document.getElementById('store').value;
+            const storeUrl = document.getElementById('url').value.trim();
+            const image = document.getElementById('image').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const sizesInput = document.getElementById('sizes').value.trim();
+            
+            // Validate
+            if(!name || !brand || !category || !price || !store || !storeUrl) {
+                showToast('⚠️ Please fill all required fields');
+                return;
+            }
+            
+            if(price <= 0) {
+                showToast('⚠️ Price must be greater than 0');
+                return;
+            }
+            
+            // Process sizes
+            const sizes = sizesInput ? sizesInput.split(',').map(s => s.trim()).filter(Boolean) : [];
+            
+            // Create deal object
+            const deal = {
+                name: name,
+                brand: brand,
+                category: category,
+                price: price,
+                originalPrice: originalPrice,
+                store: store,
+                storeUrl: storeUrl,
+                image: image || '',
+                submitterEmail: email || '',
+                sizes: sizes,
+                status: 'pending',
+                submittedAt: new Date().toISOString(),
+                clicks: 0
+            };
+
+            // Generate ID
+            const id = `${category}-${brand}-${name}`
+                .replace(/\s+/g, '-')
+                .toLowerCase()
+                .replace(/[^a-z0-9-]/g, '');
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            loading.classList.add('show');
+
+            try {
+                // Save to Firebase pending deals
+                const response = await fetch(`${PENDING_DB}/${id}.json`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(deal)
+                });
+                
+                if(response.ok) {
+                    showToast('✅ Deal submitted! We\'ll review it within 24 hours.');
+                    document.getElementById('submitForm').reset();
+                } else {
+                    showToast('❌ Error submitting. Please try again.');
+                }
+            } catch(err) {
+                console.error('Submission error:', err);
+                showToast('❌ Network error. Please check your connection.');
+            } finally {
+                // Re-enable button and hide loading
+                submitBtn.disabled = false;
+                loading.classList.remove('show');
+            }
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickCart — Store Editor</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font:13px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#eceae5;color:#111}
+button,input,select,textarea{font:inherit;color:inherit}
+#top{height:48px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:6px;padding:0 10px}
+#top .sp{flex:1}
+.b{border:1px solid #d6d6d2;background:#fff;border-radius:6px;padding:6px 10px;cursor:pointer;font-weight:600;font-size:12px;white-space:nowrap}
+.b:hover{background:#f4f4f1}.b:disabled{opacity:.35;cursor:default}
+.b.pri{background:#ff4d00;border-color:#ff4d00;color:#fff}.b.pri:hover{background:#e64500}
+.b.sm{padding:4px 8px}.b.on{background:#111;color:#fff;border-color:#111}
+#top select{border:1px solid #d6d6d2;border-radius:6px;padding:6px;background:#fff;font-size:12px}
+#state{font-size:11px;color:#888;min-width:70px;text-align:right}
+#state.dirty{color:#ff4d00;font-weight:700}
+#main{display:grid;grid-template-columns:1fr 300px;height:calc(100% - 48px)}
+#stage{overflow:auto;display:flex;justify-content:center;padding:10px}
+#frame{border:0;background:#fff;height:100%;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:width .2s}
+#panel{background:#fff;border-left:1px solid #ddd;overflow-y:auto;display:flex;flex-direction:column}
+.tabs{display:flex;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:2}
+.tabs button{flex:1;padding:10px;border:0;background:none;font-weight:700;font-size:12px;color:#888;border-bottom:2px solid transparent;cursor:pointer}
+.tabs button.on{color:#111;border-color:#ff4d00}
+.pane{display:none;padding:12px}.pane.on{display:block}
+.hint{color:#888;font-size:12px;line-height:1.6;padding:8px 0}
+.hint b{color:#111}
+.grp{border-top:1px solid #eee;padding-top:10px;margin-top:10px}
+.grp h4{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:8px}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.row label{flex:1;font-size:12px;color:#555}
+.row input[type=color]{width:34px;height:26px;border:1px solid #ccc;border-radius:4px;padding:1px;background:none;cursor:pointer}
+.row input[type=number]{width:64px;padding:4px 6px;border:1px solid #ccc;border-radius:4px}
+.row input[type=range]{flex:1.4}
+.row .x{border:0;background:none;color:#bbb;cursor:pointer;font-size:14px}.row .x:hover{color:#c00}
+input[type=text],input[type=url],select.f,textarea{width:100%;padding:7px 8px;border:1px solid #ccc;border-radius:6px;margin-bottom:6px;background:#fff}
+textarea{min-height:90px;font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.seg{display:flex;gap:4px}.seg .b{flex:1;padding:5px 0}
+.tag{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.tag code{flex:1;background:#f4f4f1;border-radius:4px;padding:4px 7px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:8px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
+#toast.show{opacity:1}
+@media(max-width:800px){
+  #main{grid-template-columns:1fr;grid-template-rows:1fr 42%}
+  #panel{border-left:0;border-top:1px solid #ddd}
+  .dev,#viewlive{display:none}
+  #top .b{padding:6px 8px}
+}
+</style>
+</head>
+<body>
+<div id="top">
+  <button class="b" onclick="goBack()">← Dashboard</button>
+  <select id="view" onchange="F()&&F().showView(this.value)" title="Page">
+    <option value="home-view">Home</option><option value="stores-view">Stores</option><option value="deals-view">Deals</option>
+  </select>
+  <span class="dev"><button class="b sm on" data-w="100%" onclick="dev(this)">🖥</button><button class="b sm" data-w="768px" onclick="dev(this)">▭</button><button class="b sm" data-w="390px" onclick="dev(this)">📱</button></span>
+  <span class="sp"></span>
+  <span id="state">Loading…</span>
+  <button class="b" id="undo" onclick="F().undo()" disabled>↶</button>
+  <button class="b" id="redo" onclick="F().redo()" disabled>↷</button>
+  <button class="b" id="viewlive" onclick="openLive()">View live ↗</button>
+  <button class="b pri" id="save" onclick="save()">Save</button>
+</div>
+
+<div id="main">
+  <div id="stage"><iframe id="frame" title="Your store"></iframe></div>
+
+  <div id="panel">
+    <div class="tabs"><button class="on" data-t="el" onclick="tab('el')">Element</button><button data-t="th" onclick="tab('th')">Theme</button></div>
+
+    <!-- ELEMENT TAB -->
+    <div class="pane on" id="pane-el">
+      <div class="hint" id="none"><b>Tap anything</b> on your store to select it.<br>Tap a selected text again (or double-tap) to <b>type directly</b>.<br>Every change shows instantly — press <b>Save</b> when you're happy.<br>Changes only affect <b>your</b> store.</div>
+      <div id="sel" style="display:none">
+        <div class="tag"><code id="lbl"></code>
+          <button class="b sm" title="Select parent" onclick="F().parent()">↑</button>
+          <button class="b sm" title="Select child" onclick="F().child()">↓</button>
+          <button class="b sm" title="Previous" onclick="F().sibling(-1)">←</button>
+          <button class="b sm" title="Next" onclick="F().sibling(1)">→</button></div>
+
+        <div id="g-text" class="grp"><h4>Text</h4>
+          <button class="b" style="width:100%;margin-bottom:8px" onclick="F().editText()">✎ Edit text</button>
+          <div class="row"><label>Size (px)</label><input type="number" id="fs" min="8" max="140" oninput="st('font-size',this.value&&this.value+'px')"></div>
+          <div class="row"><label>Weight</label><select id="fw" class="f" style="width:100px;margin:0" onchange="st('font-weight',this.value)"><option value="400">Normal</option><option value="500">Medium</option><option value="600">Semibold</option><option value="700">Bold</option><option value="800">Extra bold</option></select></div>
+          <div class="seg" style="margin-bottom:8px"><button class="b" onclick="st('text-align','left')">⇤</button><button class="b" onclick="st('text-align','center')">↔</button><button class="b" onclick="st('text-align','right')">⇥</button></div>
+          <div class="row"><label>Text colour</label><input type="color" id="c-color" oninput="st('color',this.value)"><button class="x" onclick="st('color','')">✕</button></div>
+        </div>
+
+        <div class="grp"><h4>Box</h4>
+          <div class="row"><label>Background</label><input type="color" id="c-bg" oninput="st('background-color',this.value)"><button class="x" onclick="st('background-color','')">✕</button></div>
+          <div class="row"><label>Padding</label><input type="range" id="pd" min="0" max="80" oninput="st('padding',this.value+'px')"></div>
+          <div class="row"><label>Corners</label><input type="range" id="rd" min="0" max="60" oninput="st('border-radius',this.value+'px')"></div>
+          <div class="row"><label>Opacity</label><input type="range" id="op" min="5" max="100" oninput="st('opacity',this.value/100)"></div>
+        </div>
+
+        <div id="g-img" class="grp"><h4>Image</h4>
+          <input type="url" id="imgsrc" placeholder="Image URL https://…" onchange="F().setAttr('src',this.value)">
+          <button class="b" style="width:100%" onclick="pick('img')">⬆ Upload image</button>
+        </div>
+        <div id="g-bgimg" class="grp"><h4>Background image</h4>
+          <input type="url" id="bgurl" placeholder="Image URL https://…" onchange="setBg(this.value)">
+          <div class="seg"><button class="b" onclick="pick('bg')">⬆ Upload</button><button class="b" onclick="setBg('')">Remove</button></div>
+        </div>
+        <div id="g-link" class="grp"><h4>Link</h4>
+          <input type="url" id="href" placeholder="Where it goes https://…" onchange="F().setAttr('href',this.value)">
+        </div>
+
+        <div class="grp seg"><button class="b" id="hidebtn" onclick="F().toggleHide()">Hide</button><button class="b" onclick="F().resetSelected()">Reset element</button></div>
+      </div>
+    </div>
+
+    <!-- THEME TAB -->
+    <div class="pane" id="pane-th">
+      <div class="grp" style="border:0;margin:0;padding:0"><h4>Colours (whole store)</h4><div id="vars"></div></div>
+      <div class="grp"><h4>Sections</h4><div id="secs"></div></div>
+      <div class="grp"><h4>Fonts</h4>
+        <label style="font-size:12px;color:#555">Body</label><select id="fb" class="f" onchange="F().setFont('body',this.value)"></select>
+        <label style="font-size:12px;color:#555">Headings</label><select id="fh" class="f" onchange="F().setFont('head',this.value)"></select>
+      </div>
+      <div class="grp"><h4>Custom CSS (advanced)</h4>
+        <textarea id="css" placeholder=".hero{min-height:500px}" oninput="F().setCSS(this.value)"></textarea>
+      </div>
+      <div class="grp"><button class="b" style="width:100%;color:#c00" onclick="if(confirm('Remove ALL your edits and go back to the default look?'))F().resetAll()">Reset everything</button></div>
+    </div>
+  </div>
+</div>
+<input type="file" id="file" accept="image/*" style="display:none">
+<div id="toast"></div>
+
+<script src="qc-db.js"></script>
+<script>
+/* Page Editor is for the store OWNER only. Staff and logged-out users are sent away. */
+(function(){
+  var L=localStorage,out=!L.getItem('qc_logged_user')||L.getItem('qc_is_staff')==='1';
+  if(out){
+    try{ if(window.parent&&window.parent!==window&&window.parent.qcNavigate){window.parent.qcNavigate(L.getItem('qc_logged_user')?'/dashboard':'/');return;} }catch(e){}
+    location.replace(L.getItem('qc_logged_user')?'admin.html':'landing.html');
+  }
+})();
+</script>
+<script>
+var user = localStorage.getItem('qc_logged_user') || '';
+var frame = document.getElementById('frame'), info = null, pickMode = null, dirty = false;
+function F(){ try { return frame.contentWindow.QCLive; } catch(e){ return null; } }
+function $(id){ return document.getElementById(id); }
+function toast(t){ var e=$('toast'); e.textContent=t; e.className='show'; clearTimeout(toast.t); toast.t=setTimeout(function(){e.className='';},2200); }
+
+/* ── auth + load ── */
+if (!user) { goBack(true); }
+function load(){ frame.src = 'store.html?store=' + encodeURIComponent(user) + '&edit=1&t=' + Date.now(); }
+function goBack(force){
+  if (!force && dirty && !confirm('You have unsaved changes. Leave anyway?')) return;
+  dirty = false;
+  var p = window.parent;
+  if (p && p !== window && p.qcNavigate) p.qcNavigate(force ? '/' : '/dashboard'); else location.href = force ? 'index.html' : 'admin.html';
+}
+function openLive(){ window.open(location.origin + '/store?store=' + encodeURIComponent(user), '_blank'); }
+window.addEventListener('beforeunload', function(e){ if (dirty){ e.preventDefault(); e.returnValue = ''; } });
+
+/* ── toolbar ── */
+function dev(b){ [].forEach.call(document.querySelectorAll('.dev .b'), function(x){ x.classList.remove('on'); }); b.classList.add('on'); frame.style.width = b.dataset.w; }
+function tab(t){ [].forEach.call(document.querySelectorAll('.tabs button'), function(b){ b.classList.toggle('on', b.dataset.t === t); });
+  $('pane-el').classList.toggle('on', t === 'el'); $('pane-th').classList.toggle('on', t === 'th'); if (t === 'th') fillTheme(); }
+function save(){
+  var b = $('save'); b.disabled = true; b.textContent = 'Saving…';
+  F().save().then(function(){ toast('✅ Saved — your store is updated'); })
+    .catch(function(){ toast('❌ Could not save. Check your connection.'); })
+    .then(function(){ b.disabled = false; b.textContent = 'Save'; });
+}
+document.addEventListener('keydown', function(e){
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); save(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z'){ e.preventDefault(); e.shiftKey ? F().redo() : F().undo(); }
+});
+
+/* ── events from the store frame ── */
+window.addEventListener('message', function(e){
+  var m = e.data; if (!m || !m.qc) return;
+  if (m.qc === 'ready'){
+    $('state').textContent = 'Ready'; var f = F();
+    if (f && f.draft && confirm('You have unsaved edits from last time. Restore them?')) f.restoreDraft(); else if (f && f.draft) f.discardDraft();
+    return;
+  }
+  if ('dirty' in m){ dirty = m.dirty; var s = $('state'); s.textContent = dirty ? '● Unsaved' : 'Saved'; s.className = dirty ? 'dirty' : ''; }
+  $('undo').disabled = !m.canUndo; $('redo').disabled = !m.canRedo;
+  if (m.qc === 'select'){ info = m.info; if (m.keep && info && $('panel').contains(document.activeElement)){ $('hidebtn').textContent = info.hidden ? 'Show' : 'Hide'; return; } showSel(); }
+});
+frame.addEventListener('load', function(){ $('state').textContent = 'Loading…'; });
+
+/* ── element panel ── */
+function hex(c){
+  if (!c) return '#000000'; c = c.trim();
+  if (/^#[0-9a-f]{6}$/i.test(c)) return c;
+  if (/^#[0-9a-f]{3}$/i.test(c)) return '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+  var m = c.match(/rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)(?:[ ,\/]+([\d.]+))?/);
+  if (!m) return '#000000';
+  if (m[4] !== undefined && parseFloat(m[4]) === 0) return '#ffffff';
+  return '#' + [m[1],m[2],m[3]].map(function(n){ return ('0'+(+n).toString(16)).slice(-2); }).join('');
+}
+function showSel(){
+  $('none').style.display = info ? 'none' : 'block'; $('sel').style.display = info ? 'block' : 'none';
+  if (!info) return;
+  tab('el');
+  $('lbl').textContent = info.label;
+  $('g-text').style.display = info.text ? '' : 'none';
+  $('g-img').style.display = info.img ? '' : 'none';
+  $('g-bgimg').style.display = info.img ? 'none' : '';
+  $('g-link').style.display = info.isLink ? '' : 'none';
+  $('fs').value = Math.round(info.fontSize); $('fw').value = String(Math.round((+info.fontWeight || 400) / 100) * 100);
+  $('c-color').value = hex(info.color); $('c-bg').value = hex(info.bg);
+  $('pd').value = Math.round(info.padding); $('rd').value = Math.round(info.radius); $('op').value = info.opacity;
+  $('imgsrc').value = (info.src || '').indexOf('data:') === 0 ? '' : info.src;
+  var bg = info.bgImage.match(/url\("(.*)"\)/); $('bgurl').value = bg && bg[1].indexOf('data:') !== 0 ? bg[1] : '';
+  $('href').value = info.link; $('hidebtn').textContent = info.hidden ? 'Show' : 'Hide';
+}
+function st(p, v){ if (F()) F().setStyle(p, v); }
+function setBg(u){
+  var f = F(); if (!f) return;
+  if (!u){ f.setStyle('background-image', ''); return; }
+  f.setStyle('background-image', 'url("' + u.replace(/"/g, '') + '")'); f.setStyle('background-size', 'cover'); f.setStyle('background-position', 'center');
+}
+function pick(mode){ pickMode = mode; $('file').value = ''; $('file').click(); }
+$('file').addEventListener('change', function(){
+  var file = this.files[0]; if (!file) return;
+  var img = new Image(), url = URL.createObjectURL(file);
+  img.onload = function(){
+    var max = 1000, r = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+    c.width = Math.round(img.width * r); c.height = Math.round(img.height * r); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    var d = c.toDataURL('image/webp', .8); if (d.indexOf('image/webp') < 0) d = c.toDataURL('image/jpeg', .8);
+    URL.revokeObjectURL(url);
+    if (d.length > 700000) return toast('Image too large — try a smaller one');
+    if (pickMode === 'img') F().setAttr('src', d); else setBg(d);
+    toast('Image added');
+  };
+  img.onerror = function(){ toast('Could not read that image'); }; img.src = url;
+});
+
+/* ── theme panel ── */
+var VARS = [['--accent','Accent / buttons'],['--bg','Page background'],['--text','Text'],['--card','Cards'],['--border','Borders'],['--price-color','Prices'],['--green','Discount badge']];
+var SECS = [['.nav','background-color','Navbar background'],['.hero','background-color','Hero background'],['.hero','color','Hero text'],['footer','background-color','Footer background']];
+var FONTLIST = ['Inter','Poppins','DM Sans','Space Grotesk','Montserrat','Roboto','Lato','Nunito','Raleway','Oswald','Playfair Display','Bebas Neue','Syne','Georgia','Arial'];
+function fillTheme(){
+  var f = F(); if (!f) return; var doc = frame.contentDocument, root = getComputedStyle(doc.documentElement), saved = f.getVars(), h = '';
+  VARS.forEach(function(v){ var cur = saved[v[0]] || root.getPropertyValue(v[0]).trim();
+    if (cur.indexOf('var(') === 0) cur = getComputedStyle(doc.body).color;
+    h += '<div class="row"><label>' + v[1] + '</label><input type="color" value="' + hex(cur || '#000') + '" oninput="F().setVar(\'' + v[0] + '\',this.value)"><button class="x" onclick="F().setVar(\'' + v[0] + '\',\'\');fillTheme()">✕</button></div>'; });
+  $('vars').innerHTML = h; h = '';
+  SECS.forEach(function(s, i){ var el = doc.querySelector(s[0]), cur = el ? getComputedStyle(el)[s[1] === 'color' ? 'color' : 'backgroundColor'] : '#000';
+    h += '<div class="row"><label>' + s[2] + '</label><input type="color" value="' + hex(cur) + '" oninput="F().sectionStyle(\'' + s[0] + '\',\'' + s[1] + '\',this.value)"><button class="x" onclick="F().sectionStyle(\'' + s[0] + '\',\'' + s[1] + '\',\'\')">✕</button></div>'; });
+  $('secs').innerHTML = h;
+  var fonts = f.getFonts(), opts = '<option value="">Default</option>' + FONTLIST.map(function(n){ return '<option>' + n + '</option>'; }).join('');
+  $('fb').innerHTML = opts; $('fh').innerHTML = opts; $('fb').value = fonts.body || ''; $('fh').value = fonts.head || ''; $('css').value = f.getCSS();
+}
+
+load();
+</script>
+</body>
+</html>

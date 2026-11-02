@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=index.html">
+    <style>
+        body{font-family:sans-serif;text-align:center;padding:50px;background:#f8f8f6;}
+        .loader{border:4px solid #f3f3f3;border-top:4px solid #ff4500;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:20px auto;}
+        @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    </style>
+</head>
+<body>
+    <h2>Redirecting to store...</h2>
+    <div class="loader"></div>
+    <p>You will be redirected shortly.</p>
+    
+    <script>
+        // QuickCart Click Tracker — tracks clicks for deal reward system
+// Get URL from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUrl = urlParams.get('url');
+        const dealId = urlParams.get('dealId');
+        
+        if(targetUrl) {
+            // Track click (optional - send to Firebase)
+            if(dealId) {
+                fetch(`https://sneakerai-c96f0-default-rtdb.firebaseio.com/clicks/${dealId}.json`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        referer: document.referrer || 'direct'
+                    })
+                }).catch(() => {}); // Ignore errors
+            }
+            
+            // Redirect after 1 second
+            setTimeout(() => {
+                window.location.href = decodeURIComponent(targetUrl);
+            }, 1000);
+        } else {
+            // No URL, go home
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

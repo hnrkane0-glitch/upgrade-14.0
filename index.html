@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickCart — Nigeria's Smart Commerce Platform</title>
+<meta name="description" content="Launch your online store, run your point of sale, manage inventory — one platform built for Nigerian entrepreneurs.">
+<meta property="og:title" content="QuickCart — Smart Commerce Platform">
+<meta property="og:description" content="Launch your online store in minutes. POS, Inventory, Accounting — all in one.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:#0a0a0a;}
+#app{width:100%;height:100vh;border:none;display:block;background:#0a0a0a;}
+/* ─── PAGE LOADER ─── */
+#loader{
+  position:fixed;inset:0;
+  background:#0a0a0a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;transition:opacity .5s,transform .5s;
+}
+#loader.fade{opacity:0;pointer-events:none;}
+.ld-logo{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:clamp(28px,5vw,42px);font-weight:900;
+  letter-spacing:-.03em;color:#fff;margin-bottom:24px;
+  animation:ldFade .6s ease;
+}
+.ld-logo span{color:#ff4d00;}
+.ld-bar{width:220px;height:3px;background:#1a1a1a;overflow:hidden;border-radius:2px;}
+.ld-fill{height:100%;background:linear-gradient(90deg,#ff4d00,#ff6b35);border-radius:2px;width:0;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.ld-txt{font-family:system-ui,sans-serif;font-size:11px;color:#333;margin-top:12px;letter-spacing:.1em;text-transform:uppercase;animation:ldFade .6s .2s ease backwards;}
+@keyframes ldFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* ─── ERROR STATE ─── */
+#err-state{display:none;position:fixed;inset:0;background:#0a0a0a;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:#fff;text-align:center;padding:24px;z-index:9998;}
+#err-state.show{display:flex;}
+#err-state h2{font-size:20px;font-weight:700;}
+#err-state p{font-size:13px;color:#666;max-width:360px;line-height:1.7;}
+#err-state button{background:#ff4d00;color:#fff;border:none;padding:12px 28px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<!-- SPLASH LOADER -->
+<div id="loader">
+  <div class="ld-logo">Quick<span>Cart</span></div>
+  <div class="ld-bar"><div class="ld-fill" id="ld-fill"></div></div>
+  <div class="ld-txt" id="ld-txt">Loading platform…</div>
+</div>
+
+<!-- ERROR STATE -->
+<div id="err-state">
+  <div style="font-size:40px">⚠️</div>
+  <h2>Something went wrong</h2>
+  <p id="err-msg">Unable to load the page. Please check your connection.</p>
+  <button onclick="location.reload()">Try Again</button>
+</div>
+
+<!-- MAIN APP FRAME -->
+<iframe id="app" src="about:blank" allowfullscreen allow="camera;microphone;payment"></iframe>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// QUICKCART SPA ROUTER
+// Maps clean URL paths → actual HTML files
+// Users see: quickcart.ng/dashboard
+// Browser loads: admin.html internally
+// ═══════════════════════════════════════════════════════════════════
+
+var ROUTES = {
+  '/'             : 'landing.html',
+  '/login'        : 'landing.html',
+  '/register'     : 'landing.html',
+  '/signup'       : 'landing.html',
+  '/trial'        : 'landing.html',
+  '/pricing'      : 'landing.html',
+  '/features'     : 'landing.html',
+  '/dashboard'    : 'admin.html',
+  '/admin'        : 'admin.html',
+  '/store-editor' : 'admin.html',
+  '/store'        : 'store.html',
+  '/storefront'   : 'store.html',
+  '/pos'          : 'pos.html',
+  '/payment'      : 'payment.html',
+  '/point-of-sale': 'pos.html',
+  '/page-editor'  : 'page-editor.html',
+  '/editor'       : 'page-editor.html',
+};
+
+// Protected routes (require login)
+var PROTECTED = ['/dashboard','/admin','/store-editor','/pos','/point-of-sale','/page-editor','/editor'];
+
+var frame = document.getElementById('app');
+var loader = document.getElementById('loader');
+var fill   = document.getElementById('ld-fill');
+var ldTxt  = document.getElementById('ld-txt');
+
+// ─── PROGRESS ANIMATION ───────────────────────────────────────────
+function animateLoader(targetPct, text){
+  fill.style.width = targetPct + '%';
+  if(text) ldTxt.textContent = text;
+}
+function hideLoader(){
+  animateLoader(100);
+  setTimeout(function(){
+    loader.classList.add('fade');
+    setTimeout(function(){ loader.style.display='none'; }, 500);
+  }, 300);
+}
+function showLoader(text){
+  loader.style.display = 'flex';
+  loader.classList.remove('fade');
+  fill.style.width = '0%';
+  fill.style.transition = 'none';
+  requestAnimationFrame(function(){
+    fill.style.transition = 'width .8s cubic-bezier(.4,0,.2,1)';
+    animateLoader(30, text||'Loading…');
+  });
+}
+
+// ─── SAFE HISTORY HELPERS ─────────────────────────────────────────
+// history.pushState / replaceState throw a SecurityError when the page
+// runs inside an about:srcdoc iframe (e.g. Claude preview, certain
+// embedding contexts). Wrap every call so the router keeps working.
+function safePushState(state, title, url){
+  try{ window.history.pushState(state, title, url); }catch(e){}
+}
+function safeReplaceState(state, title, url){
+  try{ window.history.replaceState(state, title, url); }catch(e){}
+}
+
+// ─── AUTH CHECK ───────────────────────────────────────────────────
+function isLoggedIn(){
+  var u = localStorage.getItem('qc_logged_user');
+  var p = localStorage.getItem('qc_sub_plan');
+  return !!(u && p);
+}
+
+// ─── PATH RESOLVER ────────────────────────────────────────────────
+function resolvePath(){
+  var path = window.location.pathname.replace(/\/+$/, '') || '/';
+  // Support ?store=xxx query for storefront
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('store')) return '/store';
+  // Support legacy direct .html loads
+  if(path.endsWith('.html')){
+    var base = path.split('/').pop().replace('.html','');
+    var reverseMap = {'landing':'/','admin':'/dashboard','pos':'/pos','store':'/store','index':'/store'};
+    path = reverseMap[base] || '/';
+  }
+  return path || '/';
+}
+
+// ─── NAVIGATE ────────────────────────────────────────────────────
+function navigate(path, pushState){
+  // Normalize
+  if(!path) path = '/';
+  if(!path.startsWith('/')) path = '/' + path;
+  // Strip trailing slash unless root
+  if(path !== '/' && path.endsWith('/')) path = path.slice(0,-1);
+  // Auth guard
+  if(PROTECTED.indexOf(path) > -1 && !isLoggedIn()){
+    if(pushState !== false) safeReplaceState({path:'/'}, '', '/');
+    loadPage('/', 'landing.html', 'login');
+    return;
+  }
+  // Page editor is owner-only — staff are bounced back to the dashboard
+  if((path==='/page-editor'||path==='/editor'||path==='/store-editor') && localStorage.getItem('qc_is_staff')==='1'){
+    path='/dashboard';
+  }
+  var file = ROUTES[path] || 'landing.html';
+  if(pushState !== false){
+    safePushState({path:path}, document.title, path);
+  }
+  // Determine intent for landing page (login vs register tab)
+  var intent = null;
+  if(path === '/login') intent = 'login';
+  if(path === '/register' || path === '/signup' || path === '/trial') intent = 'register';
+  loadPage(path, file, intent);
+}
+
+function loadPage(path, file, intent){
+  var loadingTexts = {
+    'landing.html'  : 'Loading homepage…',
+    'admin.html'    : 'Opening dashboard…',
+    'pos.html'      : 'Starting POS terminal…',
+    'store.html'    : 'Loading storefront…',
+    'page-editor.html': 'Opening store editor…',
+  };
+  showLoader(loadingTexts[file] || 'Loading…');
+  animateLoader(60);
+  var sp = new URLSearchParams(window.location.search).get('store');
+  var extra = (sp && file === 'store.html') ? 'store=' + encodeURIComponent(sp) + '&' : '';
+  frame.src = file + '?' + extra + new Date().getTime();
+  frame.onload = function(){
+    animateLoader(90, 'Almost there…');
+    // Pass intent to loaded page
+    setTimeout(function(){
+      try{
+        if(intent === 'login')    frame.contentWindow.postMessage({action:'openLogin'}, '*');
+        if(intent === 'register') frame.contentWindow.postMessage({action:'openRegister'}, '*');
+      }catch(e){}
+      hideLoader();
+    }, 150);
+  };
+  frame.onerror = function(){
+    hideLoader();
+    document.getElementById('err-state').classList.add('show');
+    document.getElementById('err-msg').textContent = 'Could not load ' + file + '. Make sure all files are uploaded.';
+  };
+}
+
+// ─── LISTEN TO CHILD FRAMES ───────────────────────────────────────
+window.addEventListener('message', function(e){
+  if(!e.data) return;
+  if(e.data.navigate)  navigate(e.data.navigate);
+  if(e.data.title)     document.title = e.data.title + ' — QuickCart';
+  if(e.data.action === 'showForgot'){
+    // Forward to landing
+    try{ frame.contentWindow.postMessage({action:'showForgot'}, '*'); }catch(err){}
+  }
+});
+
+// ─── BROWSER BACK/FORWARD ────────────────────────────────────────
+window.addEventListener('popstate', function(e){
+  var path = (e.state && e.state.path) ? e.state.path : resolvePath();
+  navigate(path, false);
+});
+
+// ─── EXPOSE GLOBAL qcNavigate (used by child frames) ─────────────
+window.qcNavigate = navigate;
+
+// ─── HANDLE DIRECT URL ACCESS ────────────────────────────────────
+// e.g. user visits quickcart.ng/dashboard directly
+window.addEventListener('DOMContentLoaded', function(){
+  var path = resolvePath();
+  // Replace initial state so back button works
+  safeReplaceState({path: path}, '', path === '/' ? '/' : path);
+  navigate(path, false);
+});
+
+// ─── HANDLE RESET TOKEN IN URL ────────────────────────────────────
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('reset_token')){
+    // Load admin page and pass reset token
+    window.addEventListener('DOMContentLoaded', function(){
+      navigate('/dashboard', false);
+      setTimeout(function(){
+        try{ frame.contentWindow.postMessage({action:'resetPassword', token: params.get('reset_token'), email: params.get('reset_email')}, '*'); }catch(e){}
+      }, 1500);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

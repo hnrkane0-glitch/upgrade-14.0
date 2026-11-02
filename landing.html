@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickCart — Nigeria's Smart Commerce & Business Platform</title>
+<meta name="description" content="Launch your online store, manage inventory, run your point of sale, and grow your business — all in one powerful platform built for Nigerian entrepreneurs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a;--bg:#fafaf8;--white:#fff;--off:#f4f3ef;
+  --accent:#ff4d00;--accent2:#ff6b35;--gold:#f5c842;
+  --green:#00875a;--blue:#0057ff;--purple:#7c3aed;
+  --border:#e8e6e0;--ink2:#4a4a4a;--ink3:#888;--ink4:#bbb;
+  --card:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+button,input,select{font-family:inherit;}
+
+/* normal system cursor (custom animated cursor removed) */
+
+/* ─── NOISE OVERLAY ─── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9997;opacity:.4;}
+
+/* ─── NAV ─── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;transition:.3s;}
+.nav.scrolled{background:rgba(250,250,248,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 24px rgba(0,0,0,.06);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;}
+.nav-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{font-size:13px;font-weight:500;color:var(--ink2);transition:.15s;letter-spacing:-.01em;}
+.nav-links a:hover{color:var(--ink);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.btn-ghost{padding:9px 20px;border:1.5px solid var(--border);background:none;font-size:12px;font-weight:600;color:var(--ink);transition:.15s;letter-spacing:-.01em;}
+.btn-ghost:hover{border-color:var(--ink);background:var(--ink);color:#fff;}
+.btn-primary{padding:10px 24px;background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:700;transition:.2s;letter-spacing:-.01em;position:relative;overflow:hidden;}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);opacity:0;transition:.2s;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,77,0,.3);}
+.btn-primary:hover::after{opacity:1;}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 40px 80px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#0d0d0d 100%);z-index:0;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px;z-index:1;}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,0,.15) 0%,transparent 70%);top:-100px;right:-100px;z-index:1;animation:glow-pulse 4s ease-in-out infinite;}
+.hero-glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(0,87,255,.1) 0%,transparent 70%);bottom:0;left:100px;z-index:1;animation:glow-pulse 6s ease-in-out infinite reverse;}
+@keyframes glow-pulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+.hero-content{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.15);padding:6px 14px;margin-bottom:32px;background:rgba(255,255,255,.05);}
+.hero-badge span{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.hero-badge .live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.5s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
+.hero-h{font-family:'Syne',sans-serif;font-size:clamp(52px,7vw,96px);font-weight:800;line-height:.93;letter-spacing:-.03em;color:#fff;margin-bottom:28px;}
+.hero-h .accent-word{color:var(--accent);display:inline-block;position:relative;}
+.hero-h .accent-word::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:underline-in 1s .8s forwards;}
+@keyframes underline-in{to{transform:scaleX(1);}}
+.hero-h .outline-word{-webkit-text-stroke:2px rgba(255,255,255,.4);color:transparent;}
+.hero-sub{font-size:clamp(15px,1.5vw,18px);color:rgba(255,255,255,.5);line-height:1.8;max-width:540px;margin-bottom:48px;font-weight:300;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:72px;}
+.hero-cta-big{padding:16px 36px;background:var(--accent);color:#fff;border:none;font-size:14px;font-weight:700;transition:.2s;letter-spacing:-.01em;display:inline-flex;align-items:center;gap:10px;}
+.hero-cta-big:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,77,0,.4);}
+.hero-cta-secondary{padding:16px 28px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:500;transition:.2s;display:inline-flex;align-items:center;gap:8px;}
+.hero-cta-secondary:hover{background:rgba(255,255,255,.1);}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.08);max-width:520px;}
+.hstat{background:rgba(255,255,255,.04);padding:20px 24px;}
+.hstat-val{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.02em;}
+.hstat-val span{color:var(--accent);}
+.hstat-lbl{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;}
+
+/* ─── FLOATING PRODUCT CARDS (hero visual) ─── */
+.hero-visual{position:absolute;right:40px;top:50%;transform:translateY(-50%);z-index:2;width:420px;display:none;}
+@media(min-width:1100px){.hero-visual{display:block;}}
+.fcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:14px 16px;margin-bottom:10px;backdrop-filter:blur(20px);transition:.3s;position:relative;overflow:hidden;}
+.fcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.05),transparent);pointer-events:none;}
+.fcard:hover{background:rgba(255,255,255,.1);transform:translateX(-4px);}
+.fcard-row{display:flex;align-items:center;gap:12px;}
+.fcard-ico{width:40px;height:40px;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.fcard-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;}
+.fcard-meta{font-size:10px;color:rgba(255,255,255,.4);}
+.fcard-price{margin-left:auto;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--gold);}
+.fcard-badge{position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;font-size:8px;font-weight:700;padding:2px 6px;letter-spacing:.06em;}
+
+/* ─── SECTION COMMON ─── */
+section{padding:100px 40px;}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.section-label::before{content:'';width:24px;height:2px;background:var(--accent);}
+.section-h{font-family:'Syne',sans-serif;font-size:clamp(36px,4vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:20px;}
+.section-sub{font-size:16px;color:var(--ink2);line-height:1.8;max-width:560px;}
+
+/* ─── MARQUEE TRUST BAR ─── */
+.trust-bar{background:var(--ink);padding:16px 0;overflow:hidden;border-top:1px solid #222;border-bottom:1px solid #222;}
+.trust-track{display:flex;gap:56px;animation:slide 25s linear infinite;white-space:nowrap;}
+.trust-item{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;}
+.trust-item span{font-size:16px;}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── FEATURES GRID ─── */
+.features{background:var(--bg);}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:64px;}
+.feat{background:var(--bg);padding:40px 32px;transition:.2s;position:relative;overflow:hidden;}
+.feat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:.3s;}
+.feat:hover{background:var(--white);}
+.feat:hover::after{transform:scaleX(1);}
+.feat-ico{width:52px;height:52px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;transition:.2s;}
+.feat:hover .feat-ico{background:var(--accent);}
+.feat-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px;letter-spacing:-.02em;}
+.feat-desc{font-size:13px;color:var(--ink2);line-height:1.8;}
+.feat-link{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;margin-top:16px;display:inline-flex;align-items:center;gap:6px;transition:.15s;}
+.feat-link:hover{gap:10px;}
+
+/* ─── MODULES SHOWCASE ─── */
+.modules{background:var(--ink);color:#fff;overflow:hidden;}
+.modules .section-h{color:#fff;}
+.modules .section-sub{color:rgba(255,255,255,.5);}
+.mod-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.1);margin-top:48px;overflow-x:auto;}
+.mod-tab{padding:14px 24px;font-size:12px;font-weight:600;color:rgba(255,255,255,.4);border:none;background:none;transition:.2s;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase;}
+.mod-tab:hover{color:rgba(255,255,255,.7);}
+.mod-tab.on{color:#fff;border-bottom-color:var(--accent);}
+.mod-panes{position:relative;}
+.mod-pane{display:none;padding:48px 0;}
+.mod-pane.on{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.mod-pane-text h3{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:16px;letter-spacing:-.02em;}
+.mod-pane-text p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.9;margin-bottom:24px;}
+.mod-feature-list{display:flex;flex-direction:column;gap:10px;}
+.mod-feat{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:rgba(255,255,255,.7);}
+.mod-feat-check{width:20px;height:20px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;}
+.mod-screen{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:24px;position:relative;overflow:hidden;min-height:360px;display:flex;flex-direction:column;gap:12px;}
+.mod-screen-bar{height:8px;background:rgba(255,255,255,.06);border-radius:2px;}
+.mod-screen-bar.w40{width:40%;}
+.mod-screen-bar.w60{width:60%;}
+.mod-screen-bar.w80{width:80%;}
+.mod-screen-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.mod-screen-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:12px;text-align:center;}
+.mod-screen-card .val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;}
+.mod-screen-card .lbl{font-size:9px;color:rgba(255,255,255,.3);margin-top:2px;text-transform:uppercase;letter-spacing:.06em;}
+.mod-screen-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.mod-screen-table tr{border-bottom:1px solid rgba(255,255,255,.05);}
+.mod-screen-table td{padding:7px 0;font-size:11px;color:rgba(255,255,255,.5);}
+.mod-screen-table td:last-child{text-align:right;color:#4ade80;font-family:'DM Mono',monospace;}
+.pos-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+.pos-key{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:12px;text-align:center;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;transition:.15s;}
+.pos-key:hover{background:rgba(255,255,255,.15);}
+.pos-key.action{background:var(--accent);}
+
+/* ─── HOW IT WORKS ─── */
+.how{background:var(--off);}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:72px;position:relative;}
+.steps::before{content:'';position:absolute;top:28px;left:12.5%;right:12.5%;height:2px;background:repeating-linear-gradient(90deg,var(--border) 0,var(--border) 8px,transparent 8px,transparent 16px);z-index:0;}
+.step{text-align:center;padding:0 20px;position:relative;z-index:1;}
+.step-num{width:56px;height:56px;background:var(--ink);color:#fff;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;transition:.2s;}
+.step:hover .step-num{background:var(--accent);}
+.step-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em;}
+.step-desc{font-size:13px;color:var(--ink2);line-height:1.8;}
+
+/* ─── PRICING ─── */
+.pricing{background:var(--bg);}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-top:64px;}
+.plan{background:var(--bg);padding:40px 32px;position:relative;transition:.2s;}
+.plan.featured{background:var(--ink);color:#fff;}
+.plan-badge{position:absolute;top:24px;right:24px;background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;letter-spacing:.08em;text-transform:uppercase;}
+.plan-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;color:var(--ink3);}
+.plan.featured .plan-name{color:rgba(255,255,255,.5);}
+.plan-price{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px;line-height:1;}
+.plan-price sup{font-size:20px;vertical-align:top;margin-top:10px;font-weight:500;}
+.plan-cycle{font-size:12px;color:var(--ink3);margin-bottom:32px;}
+.plan.featured .plan-cycle{color:rgba(255,255,255,.4);}
+.plan-features{display:flex;flex-direction:column;gap:10px;margin-bottom:36px;}
+.plan-feat{display:flex;align-items:center;gap:10px;font-size:13px;}
+.plan.featured .plan-feat{color:rgba(255,255,255,.8);}
+.plan-feat-ico{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.plan-feat-ico.yes{color:var(--green);}
+.plan.featured .plan-feat-ico.yes{color:#4ade80;}
+.plan-feat-ico.no{color:var(--ink4);}
+.plan-cta{display:block;text-align:center;padding:13px;font-size:12px;font-weight:700;transition:.2s;letter-spacing:.04em;text-transform:uppercase;}
+.plan:not(.featured) .plan-cta{background:var(--ink);color:#fff;}
+.plan:not(.featured) .plan-cta:hover{background:var(--accent);}
+.plan.featured .plan-cta{background:var(--accent);color:#fff;}
+.plan.featured .plan-cta:hover{background:var(--accent2);}
+
+/* ─── TESTIMONIALS ─── */
+.testimonials{background:var(--off);overflow:hidden;}
+.testi-track-wrap{overflow:hidden;margin:64px -40px 0;}
+.testi-track{display:flex;gap:20px;animation:slide-testi 40s linear infinite;padding:0 40px;}
+.testi-track:hover{animation-play-state:paused;}
+.testi{background:var(--white);border:1px solid var(--border);padding:28px;min-width:320px;flex-shrink:0;}
+.testi-text{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:20px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-avatar{width:40px;height:40px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
+.testi-name{font-size:13px;font-weight:700;}
+.testi-role{font-size:11px;color:var(--ink3);}
+.testi-stars{color:var(--gold);font-size:12px;margin-bottom:12px;}
+@keyframes slide-testi{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 10px))}}
+
+/* ─── CTA BAND ─── */
+.cta-band{background:var(--accent);padding:80px 40px;text-align:center;position:relative;overflow:hidden;}
+.cta-band::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent) 0%,#c83700 100%);}
+.cta-band-content{position:relative;z-index:1;}
+.cta-band h2{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:16px;line-height:1.05;}
+.cta-band p{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:40px;}
+.cta-band .btn-white{background:#fff;color:var(--accent);padding:16px 40px;font-size:14px;font-weight:800;border:none;transition:.2s;display:inline-block;letter-spacing:-.01em;}
+.cta-band .btn-white:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.2);}
+
+/* ─── FOOTER ─── */
+footer{background:var(--ink);color:rgba(255,255,255,.5);padding:72px 40px 40px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;max-width:1200px;margin:0 auto 56px;}
+.footer-brand .logo-text{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:14px;}
+.footer-brand p{font-size:13px;line-height:1.8;max-width:260px;}
+.footer-col h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:16px;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:8px;transition:.15s;}
+.footer-col a:hover{color:#fff;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;max-width:1200px;margin:0 auto;}
+.footer-bottom span{font-size:12px;}
+
+/* ─── REGISTER MODAL ─── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;max-width:480px;width:92%;overflow:hidden;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;color:#888;z-index:10;}
+.reg-header{background:var(--ink);padding:32px;text-align:center;}
+.reg-header h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:6px;}
+.reg-header p{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;}
+.reg-tabs{display:flex;border-bottom:1px solid var(--border);}
+.reg-tab{flex:1;padding:13px;font-size:11px;font-weight:700;border:none;background:#fff;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;letter-spacing:.06em;text-transform:uppercase;}
+.reg-tab.on{color:var(--ink);border-bottom-color:var(--accent);}
+.reg-body{padding:28px;}
+.reg-pane{display:none;}
+.reg-pane.on{display:block;}
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:5px;}
+.ff input,.ff select{width:100%;border:1.5px solid var(--border);padding:10px 12px;font-size:13px;outline:none;transition:.15s;background:#fff;color:var(--ink);}
+.ff input:focus,.ff select:focus{border-color:var(--ink);}
+.plan-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.plan-card{border:2px solid var(--border);padding:14px;cursor:pointer;transition:.15s;text-align:center;}
+.plan-card.sel{border-color:var(--accent);background:#fff5f0;}
+.plan-card h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:4px;}
+.plan-card p{font-size:11px;color:var(--ink3);}
+.plan-card .price{font-size:18px;font-weight:800;color:var(--accent);margin-top:6px;}
+.trial-badge{background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;padding:2px 8px;letter-spacing:.06em;text-transform:uppercase;display:inline-block;margin-top:4px;}
+.reg-cta{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.04em;text-transform:uppercase;margin-top:4px;}
+.reg-cta:hover{background:var(--accent2);}
+.reg-err{display:none;background:#fce4e4;color:#c00;padding:8px 12px;font-size:11px;font-weight:600;margin-bottom:12px;}
+.reg-success{display:none;background:#f0faf4;border:1px solid #b2dfdb;color:#1a6b3c;padding:14px;font-size:12px;font-weight:600;margin-bottom:12px;}
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--ink3);font-size:11px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ─── FLOATING ELEMENTS ─── */
+.floating-cta{position:fixed;bottom:28px;right:28px;z-index:800;animation:float-up .6s .5s backwards;}
+@keyframes float-up{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.floating-cta button{background:var(--accent);color:#fff;border:none;padding:14px 24px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(255,77,0,.4);transition:.2s;display:flex;align-items:center;gap:8px;}
+.floating-cta button:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,77,0,.5);}
+
+/* ─── ANIMATIONS ─── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  section{padding:72px 24px;}
+  .nav{padding:0 24px;}
+  .hero{padding:100px 24px 72px;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .plans{grid-template-columns:1fr;}
+  .steps{grid-template-columns:1fr 1fr;gap:32px;}
+  .steps::before{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .mod-pane.on{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center;}
+}
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .hero-h{font-size:44px;}
+  .feat-grid{grid-template-columns:1fr;}
+  .hero-ctas{flex-direction:column;}
+  .hero-cta-big,.hero-cta-secondary{width:100%;justify-content:center;}
+  .footer-grid{grid-template-columns:1fr;}
+  .plan-cards{grid-template-columns:1fr;}
+  .floating-cta{bottom:16px;right:16px;}
+}
+
+/* ══ RESPONSIVE ENHANCEMENTS — Landing ══════════════════════════════ */
+@media(max-width:1100px){
+  .hero{padding:110px 28px 72px;}
+  .hero-h{font-size:clamp(44px,6vw,78px);}
+}
+@media(max-width:900px){
+  section{padding:72px 24px;}
+  .nav{padding:0 24px;}
+  .hero{padding:100px 24px 64px;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .plans,.plan-cards{grid-template-columns:1fr;}
+  .steps{grid-template-columns:1fr 1fr;gap:28px;}
+  .steps::before{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:24px;}
+  .mod-pane.on{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center;}
+  .hero-stats{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .nav-right .btn-ghost{display:none;}
+  .nav{padding:0 16px;height:60px;}
+  .hero{padding:84px 16px 52px;}
+  .hero-h{font-size:clamp(36px,9vw,54px)!important;}
+  .hero-ctas{flex-direction:column;}
+  .hero-cta-big,.hero-cta-secondary{width:100%;justify-content:center;}
+  .feat-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .plan-cards{grid-template-columns:1fr;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .floating-cta{bottom:16px;right:16px;}
+  .hero-badge{font-size:9px;}
+  .section-h{font-size:clamp(28px,7vw,40px);}
+  /* Modal */
+  .mod-wrap{padding:16px;}
+  .mod-pane.on{grid-template-columns:1fr;}
+  .ff input,.ff select{font-size:16px;} /* prevent iOS zoom */
+}
+@media(max-width:380px){
+  .hero-h{font-size:34px!important;}
+  .hero-stats{grid-template-columns:1fr;}
+}
+
+</style>
+<script src="qc-db.js"></script>
+</head>
+<body>
+
+
+<!-- NAVBAR -->
+<nav class="nav" id="main-nav">
+  <div class="nav-logo">
+    <div class="dot"></div>
+    QuickCart
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#modules">Modules</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="openModal('login')">Log In</button>
+    <button class="btn-primary" onclick="openModal('register')">Start Free Trial →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="live-dot"></span>
+      <span>Now live in Nigeria · 2,400+ active stores</span>
+    </div>
+    <h1 class="hero-h">
+      Your Business.<br>
+      <span class="accent-word">Smarter.</span><br>
+      <span class="outline-word">Faster.</span>
+    </h1>
+    <p class="hero-sub">Launch your online store, run your point of sale, manage inventory, track finances — one platform built for every Nigerian entrepreneur from market stall to enterprise.</p>
+    <div class="hero-ctas">
+      <button class="hero-cta-big" onclick="openModal('register')">
+        🚀 Start Free — 14 Days No Card
+      </button>
+      <button class="hero-cta-secondary" onclick="document.getElementById('modules').scrollIntoView({behavior:'smooth'})">
+        ▶ See How It Works
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">₦<span>2.4B</span></div><div class="hstat-lbl">GMV Processed</div></div>
+      <div class="hstat"><div class="hstat-val"><span>2,400</span>+</div><div class="hstat-lbl">Active Stores</div></div>
+      <div class="hstat"><div class="hstat-val"><span>99.9</span>%</div><div class="hstat-lbl">Uptime SLA</div></div>
+    </div>
+  </div>
+  <!-- Floating product cards -->
+  <div class="hero-visual">
+    <div class="fcard" style="animation:card-float 3s ease-in-out infinite;">
+      <div class="fcard-badge">LIVE SALE</div>
+      <div class="fcard-row">
+        <div class="fcard-ico" style="background:rgba(255,77,0,.15);">📱</div>
+        <div><div class="fcard-name">Samsung Galaxy A35</div><div class="fcard-meta">Qty: 14 in stock</div></div>
+        <div class="fcard-price">₦285,000</div>
+      </div>
+    </div>
+    <div class="fcard" style="animation:card-float 3s 1s ease-in-out infinite;">
+      <div class="fcard-row">
+        <div class="fcard-ico" style="background:rgba(0,135,90,.15);">💻</div>
+        <div><div class="fcard-name">HP Laptop 15s</div><div class="fcard-meta">3 sold today</div></div>
+        <div class="fcard-price">₦520,000</div>
+      </div>
+    </div>
+    <div class="fcard" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);animation:card-float 3s .5s ease-in-out infinite;">
+      <div class="fcard-row">
+        <div class="fcard-ico" style="background:rgba(245,200,66,.15);">📊</div>
+        <div><div class="fcard-name">Today's Revenue</div><div class="fcard-meta">Updated just now</div></div>
+        <div class="fcard-price" style="color:#f5c842;">₦1,240,000</div>
+      </div>
+    </div>
+    <div class="fcard" style="animation:card-float 3s 1.5s ease-in-out infinite;">
+      <div class="fcard-row">
+        <div class="fcard-ico" style="background:rgba(0,87,255,.15);">🛒</div>
+        <div><div class="fcard-name">New Order #4821</div><div class="fcard-meta">2 minutes ago · Ikeja</div></div>
+        <div class="fcard-price" style="color:#4ade80;">+₦45,000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-track">
+    <span class="trust-item"><span>🔒</span> Paystack Secured</span>
+    <span class="trust-item"><span>🏦</span> CBN Compliant</span>
+    <span class="trust-item"><span>📱</span> WhatsApp Integration</span>
+    <span class="trust-item"><span>🇳🇬</span> Built for Nigeria</span>
+    <span class="trust-item"><span>⚡</span> Real-time Sync</span>
+    <span class="trust-item"><span>📊</span> Full Analytics</span>
+    <span class="trust-item"><span>🔌</span> Offline Mode POS</span>
+    <span class="trust-item"><span>🤖</span> AI Powered</span>
+    <span class="trust-item"><span>🔒</span> Paystack Secured</span>
+    <span class="trust-item"><span>🏦</span> CBN Compliant</span>
+    <span class="trust-item"><span>📱</span> WhatsApp Integration</span>
+    <span class="trust-item"><span>🇳🇬</span> Built for Nigeria</span>
+    <span class="trust-item"><span>⚡</span> Real-time Sync</span>
+    <span class="trust-item"><span>📊</span> Full Analytics</span>
+    <span class="trust-item"><span>🔌</span> Offline Mode POS</span>
+    <span class="trust-item"><span>🤖</span> AI Powered</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label reveal">Everything You Need</div>
+    <h2 class="section-h reveal">One platform.<br>Every tool your<br>business needs.</h2>
+    <p class="section-sub reveal">From a single market stall to a multi-branch enterprise — QuickCart scales with you. No technical skills needed.</p>
+    <div class="feat-grid">
+      <div class="feat reveal">
+        <div class="feat-ico">🏪</div>
+        <div class="feat-title">Online Store Builder</div>
+        <p class="feat-desc">Launch a beautiful, mobile-first online store in minutes. Drag-and-edit every element — no coding, no templates, just your brand.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ico">🖥️</div>
+        <div class="feat-title">Point of Sale (POS)</div>
+        <p class="feat-desc">A full-featured POS that works online and offline. Serve walk-in customers, issue receipts, split payments, and sync with your stock in real time.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ico">📦</div>
+        <div class="feat-title">Inventory Management</div>
+        <p class="feat-desc">Track every item across all locations. Get low-stock alerts, batch update products, set reorder points, and manage variants — sizes, colors, units.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ico">📒</div>
+        <div class="feat-title">Accounting & Bookkeeping</div>
+        <p class="feat-desc">Automated income, expense, and profit tracking. Generate P&L statements, VAT reports, and cash flow analysis with one click. FIRS-ready exports.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ico">🤖</div>
+        <div class="feat-title">AI Deal Scraper</div>
+        <p class="feat-desc">Paste any product URL from Jumia, Konga, or Amazon — AI extracts name, price, image, and specs automatically. Bulk-import in seconds.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-ico">📣</div>
+        <div class="feat-title">Marketing & CRM</div>
+        <p class="feat-desc">WhatsApp blasts, email digests, price drop alerts, referral programs, coupon codes, leaderboards — everything to keep customers coming back.</p>
+        <div class="feat-link">Explore →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES SHOWCASE -->
+<section class="modules" id="modules">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label" style="color:var(--accent);">Deep Dive</div>
+    <h2 class="section-h">Four powerful modules.<br>One business brain.</h2>
+    <p class="section-sub">Each module is purpose-built, deeply integrated, and ridiculously easy to use.</p>
+    <div class="mod-tabs">
+      <button class="mod-tab on" onclick="modTab('store',this)">🏪 Store</button>
+      <button class="mod-tab" onclick="modTab('pos',this)">🖥️ POS</button>
+      <button class="mod-tab" onclick="modTab('inventory',this)">📦 Inventory</button>
+      <button class="mod-tab" onclick="modTab('accounting',this)">📒 Accounting</button>
+      <button class="mod-tab" onclick="modTab('marketing',this)">📣 Marketing</button>
+    </div>
+    <div class="mod-panes">
+
+      <!-- STORE MODULE -->
+      <div class="mod-pane on" id="mod-store">
+        <div class="mod-pane-text">
+          <h3>Your store, exactly how you want it.</h3>
+          <p>A visual page editor where every element on your storefront is click-to-edit. Change colors, fonts, layout, hero text, product categories, footer links — no code, ever. It's like having WordPress but built for African commerce.</p>
+          <div class="mod-feature-list">
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Click-to-edit visual page builder</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Live preview as you type</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Custom domain support</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Mobile-first, blazing fast</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Paystack checkout built in</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>SEO + social meta editor</div>
+          </div>
+        </div>
+        <div class="mod-screen">
+          <div style="background:rgba(255,77,0,.1);border:1px solid rgba(255,77,0,.2);padding:8px 12px;font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;text-transform:uppercase;">● LIVE EDIT MODE ACTIVE</div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <div style="flex:1;background:rgba(255,255,255,.05);padding:12px;border:1px dashed rgba(255,255,255,.15);">
+              <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Hero Headline</div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;">FIND THE<br>BEST DEALS</div>
+              <div style="background:rgba(255,77,0,.3);width:2px;height:18px;display:inline-block;animation:blink .8s step-end infinite;"></div>
+            </div>
+            <div style="width:120px;background:rgba(255,255,255,.05);padding:10px;border:1px dashed rgba(255,255,255,.15);">
+              <div style="font-size:9px;color:rgba(255,255,255,.3);margin-bottom:6px;">Color</div>
+              <div style="height:24px;background:var(--accent);width:100%;margin-bottom:4px;"></div>
+              <div style="height:24px;background:#0a0a0a;width:100%;margin-bottom:4px;"></div>
+              <div style="height:24px;background:#fff;width:100%;border:1px solid rgba(255,255,255,.1);"></div>
+            </div>
+          </div>
+          <div class="mod-screen-row">
+            <div class="mod-screen-card"><div class="val" style="font-size:14px;color:var(--accent);">₦285k</div><div class="lbl">Samsung A35</div></div>
+            <div class="mod-screen-card"><div class="val" style="font-size:14px;color:var(--gold);">₦520k</div><div class="lbl">HP Laptop</div></div>
+            <div class="mod-screen-card"><div class="val" style="font-size:14px;color:#4ade80;">₦89k</div><div class="lbl">AirPods Pro</div></div>
+          </div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-top:8px;">⇡ Click any element to edit it</div>
+        </div>
+      </div>
+
+      <!-- POS MODULE -->
+      <div class="mod-pane" id="mod-pos">
+        <div class="mod-pane-text">
+          <h3>Point of Sale that just works.</h3>
+          <p>Open the POS from your store dashboard and your cashier is ready to sell. Supports cash, card, transfer, and split payments. Works offline — syncs when you reconnect.</p>
+          <div class="mod-feature-list">
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Offline-capable — works without internet</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Cash, card, bank transfer, split payment</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Thermal receipt printing</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Multiple cashier accounts</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Barcode scanner support</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>End-of-day cash report</div>
+          </div>
+        </div>
+        <div class="mod-screen">
+          <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">POS TERMINAL — CASHIER: AMAKA</div>
+          <div style="background:rgba(0,135,90,.1);border:1px solid rgba(0,135,90,.2);padding:10px 12px;">
+            <div style="font-size:11px;color:#4ade80;margin-bottom:6px;font-weight:700;">CURRENT SALE</div>
+            <table class="mod-screen-table">
+              <tr><td>Samsung A35 × 1</td><td>₦285,000</td></tr>
+              <tr><td>USB-C Cable × 2</td><td>₦8,000</td></tr>
+              <tr><td>Screen Protector × 1</td><td>₦3,500</td></tr>
+            </table>
+            <div style="border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;">
+              <span>TOTAL</span><span style="color:#4ade80;">₦296,500</span>
+            </div>
+          </div>
+          <div class="pos-keypad">
+            <div class="pos-key">1</div><div class="pos-key">2</div><div class="pos-key">3</div>
+            <div class="pos-key">4</div><div class="pos-key">5</div><div class="pos-key">6</div>
+            <div class="pos-key">7</div><div class="pos-key">8</div><div class="pos-key">9</div>
+            <div class="pos-key">⌫</div><div class="pos-key">0</div><div class="pos-key action">✓ Pay</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVENTORY MODULE -->
+      <div class="mod-pane" id="mod-inventory">
+        <div class="mod-pane-text">
+          <h3>Never run out of stock again.</h3>
+          <p>Real-time inventory across all sales channels. Every sale — online or via POS — automatically deducts stock. Get alerts before you run dry.</p>
+          <div class="mod-feature-list">
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Real-time stock sync across channels</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Low stock and out-of-stock alerts</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Product variants (size, color, unit)</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Batch import via CSV or URL</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Supplier and purchase order tracking</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>FIFO / LIFO cost tracking</div>
+          </div>
+        </div>
+        <div class="mod-screen">
+          <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">INVENTORY — 147 PRODUCTS</div>
+          <div class="mod-screen-row" style="margin-bottom:12px;">
+            <div class="mod-screen-card"><div class="val">147</div><div class="lbl">Total SKUs</div></div>
+            <div class="mod-screen-card"><div class="val" style="color:#f87171;">8</div><div class="lbl">Low Stock</div></div>
+            <div class="mod-screen-card"><div class="val" style="color:#f5c842;">₦48M</div><div class="lbl">Stock Value</div></div>
+          </div>
+          <table class="mod-screen-table">
+            <tr><td style="color:#f87171;">⚠ iPhone 15 128GB</td><td style="color:#f87171;">2 left</td></tr>
+            <tr><td>Samsung A35 5G</td><td style="color:#4ade80;">14 units</td></tr>
+            <tr><td>HP Laptop 15s</td><td style="color:#4ade80;">6 units</td></tr>
+            <tr><td style="color:#f87171;">⚠ AirPods Pro 2</td><td style="color:#f87171;">1 left</td></tr>
+            <tr><td>Infinix Hot 40</td><td style="color:#4ade80;">22 units</td></tr>
+          </table>
+          <div style="margin-top:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);padding:8px 10px;font-size:10px;color:#f87171;">⚠ 3 items below reorder point — reorder now →</div>
+        </div>
+      </div>
+
+      <!-- ACCOUNTING MODULE -->
+      <div class="mod-pane" id="mod-accounting">
+        <div class="mod-pane-text">
+          <h3>Know your numbers. Always.</h3>
+          <p>Automated bookkeeping that turns every sale and expense into clean financial reports. Stay tax-ready, understand your margins, and make better decisions.</p>
+          <div class="mod-feature-list">
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Automated income & expense tracking</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Profit & Loss statements</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>VAT / FIRS-ready reports</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Cash flow analysis</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Multi-currency (₦, $, £)</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Export to Excel / PDF</div>
+          </div>
+        </div>
+        <div class="mod-screen">
+          <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">ACCOUNTING — JANUARY 2026</div>
+          <div class="mod-screen-row" style="margin-bottom:12px;">
+            <div class="mod-screen-card"><div class="val" style="color:#4ade80;">₦3.2M</div><div class="lbl">Revenue</div></div>
+            <div class="mod-screen-card"><div class="val" style="color:#f87171;">₦1.1M</div><div class="lbl">Expenses</div></div>
+            <div class="mod-screen-card"><div class="val" style="color:var(--gold);">₦2.1M</div><div class="lbl">Net Profit</div></div>
+          </div>
+          <div style="height:80px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:8px;display:flex;align-items:flex-end;gap:4px;">
+            <div style="flex:1;background:rgba(74,222,128,.6);height:40%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:55%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:48%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:72%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:63%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:88%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(74,222,128,.6);height:75%;border-radius:1px 1px 0 0;"></div>
+            <div style="flex:1;background:rgba(245,200,66,.8);height:100%;border-radius:1px 1px 0 0;position:relative;">
+              <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--gold);white-space:nowrap;">₦2.1M</div>
+            </div>
+          </div>
+          <div style="font-size:9px;color:rgba(255,255,255,.2);text-align:center;margin-top:4px;">Revenue — Last 8 months</div>
+        </div>
+      </div>
+
+      <!-- MARKETING MODULE -->
+      <div class="mod-pane" id="mod-marketing">
+        <div class="mod-pane-text">
+          <h3>Grow your customer base on autopilot.</h3>
+          <p>WhatsApp blasts to your customer list, automated deal alerts, email campaigns, referral programs, and a loyalty leaderboard — all built in, zero extra cost.</p>
+          <div class="mod-feature-list">
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>WhatsApp & Telegram deal blasts</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Email digest campaigns</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Price drop alerts (auto-triggered)</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Referral program with airtime rewards</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Coupon code generator</div>
+            <div class="mod-feat"><div class="mod-feat-check">✓</div>Customer loyalty leaderboard</div>
+          </div>
+        </div>
+        <div class="mod-screen">
+          <div style="font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">MARKETING HUB</div>
+          <div style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">📱</span>
+            <div><div style="font-size:11px;font-weight:700;color:#4ade80;">WhatsApp Blast Ready</div><div style="font-size:10px;color:rgba(255,255,255,.4);">3,240 subscribers • Last sent 2d ago</div></div>
+            <div style="margin-left:auto;background:rgba(37,211,102,.3);color:#4ade80;font-size:9px;font-weight:700;padding:3px 8px;">SEND</div>
+          </div>
+          <div style="background:rgba(0,87,255,.08);border:1px solid rgba(0,87,255,.2);padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">📧</span>
+            <div><div style="font-size:11px;font-weight:700;color:#60a5fa;">Email Digest — Monday</div><div style="font-size:10px;color:rgba(255,255,255,.4);">1,840 subscribers • 62% open rate</div></div>
+            <div style="margin-left:auto;background:rgba(0,87,255,.3);color:#60a5fa;font-size:9px;font-weight:700;padding:3px 8px;">AUTO</div>
+          </div>
+          <div class="mod-screen-row">
+            <div class="mod-screen-card"><div class="val" style="color:var(--gold);">₦48k</div><div class="lbl">Referral Pay</div></div>
+            <div class="mod-screen-card"><div class="val">3.2k</div><div class="lbl">Subscribers</div></div>
+            <div class="mod-screen-card"><div class="val" style="color:#4ade80;">62%</div><div class="lbl">Open Rate</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end mod-panes -->
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label reveal">Simple Process</div>
+    <h2 class="section-h reveal">Live in under 10 minutes.</h2>
+    <p class="section-sub reveal">No technical skills needed. No setup fees. Just your hustle.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">Register & Choose Plan</div>
+        <p class="step-desc">Sign up with your email. Pick a plan or start with 14 days completely free — no card required.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">Customize Your Store</div>
+        <p class="step-desc">Open the visual editor. Click on any element to change it — logo, colors, products, categories, everything.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">Add Products</div>
+        <p class="step-desc">Paste any product URL and AI imports it automatically. Or add manually. Manage inventory from the same screen.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title">Start Selling</div>
+        <p class="step-desc">Share your store link. Use the POS for walk-in customers. Payments via Paystack — funds in your account fast.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label reveal">Simple Pricing</div>
+    <h2 class="section-h reveal">Pay once, grow forever.</h2>
+    <p class="section-sub reveal">No hidden fees. No transaction percentages. Cancel anytime.</p>
+    <div class="plans">
+      <div class="plan reveal">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><sup>₦</sup>7,900</div>
+        <div class="plan-cycle">per month</div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Online Store (50 products)</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Paystack Checkout</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Basic POS</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Inventory Tracking</div>
+          <div class="plan-feat"><div class="plan-feat-ico no">✗</div>Advanced Analytics</div>
+          <div class="plan-feat"><div class="plan-feat-ico no">✗</div>WhatsApp Marketing</div>
+          <div class="plan-feat"><div class="plan-feat-ico no">✗</div>Accounting Module</div>
+        </div>
+        <a href="#" onclick="openModal('register')" class="plan-cta">Start Free Trial</a>
+      </div>
+      <div class="plan featured reveal">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><sup>₦</sup>16,590</div>
+        <div class="plan-cycle">per month · billed monthly</div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Unlimited Products</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Full POS + Offline Mode</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Inventory Management</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Accounting & Reports</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>WhatsApp Marketing</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>AI Product Scraper</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Custom Domain</div>
+        </div>
+        <a href="#" onclick="openModal('register')" class="plan-cta">Start Free Trial</a>
+      </div>
+      <div class="plan reveal">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><sup>₦</sup>45,000</div>
+        <div class="plan-cycle">per month · multi-branch</div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Everything in Pro</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Multiple Branches</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Staff Management</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>API Access</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Priority Support</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>White-label Option</div>
+          <div class="plan-feat"><div class="plan-feat-ico yes">✓</div>Dedicated Account Manager</div>
+        </div>
+        <a href="#" onclick="openModal('register')" class="plan-cta">Contact Sales</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <p style="font-size:13px;color:var(--ink3);">✅ All plans include 14-day free trial · No card required · Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label reveal">Real Customers</div>
+    <h2 class="section-h reveal">Nigerian businesses<br>already thriving.</h2>
+  </div>
+  <div class="testi-track-wrap">
+    <div class="testi-track">
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"QuickCart changed everything for my electronics shop in Ikeja. The POS works even when NEPA takes light, and the inventory sync is perfect."</div><div class="testi-author"><div class="testi-avatar">C</div><div><div class="testi-name">Chukwuemeka Obi</div><div class="testi-role">Electronics — Computer Village, Lagos</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"I was managing my fashion store on WhatsApp before. Now I have a real website, proper inventory, and I can see my profits every day."</div><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Adaeze Nwosu</div><div class="testi-role">Fashion Boutique — Abuja</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"The AI scraper is wild. I imported 80 products from Jumia in 10 minutes. My online store was live the same afternoon."</div><div class="testi-author"><div class="testi-avatar">E</div><div><div class="testi-name">Emmanuel Adeyemi</div><div class="testi-role">General Merchandise — Ibadan</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"The accounting module alone is worth the subscription. I used to hire an accountant just for monthly reports. Now it's automatic."</div><div class="testi-author"><div class="testi-avatar">F</div><div><div class="testi-name">Fatima Suleiman</div><div class="testi-role">Grocery Store — Kano</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"Three branches, one dashboard. I can see which branch is performing, transfer stock between them, and manage all cashiers from one place."</div><div class="testi-author"><div class="testi-avatar">K</div><div><div class="testi-name">Kingsley Eze</div><div class="testi-role">Multi-branch Supermarket — Port Harcourt</div></div></div></div>
+      <!-- Duplicate for loop -->
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"QuickCart changed everything for my electronics shop in Ikeja. The POS works even when NEPA takes light, and the inventory sync is perfect."</div><div class="testi-author"><div class="testi-avatar">C</div><div><div class="testi-name">Chukwuemeka Obi</div><div class="testi-role">Electronics — Computer Village, Lagos</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"I was managing my fashion store on WhatsApp before. Now I have a real website, proper inventory, and I can see my profits every day."</div><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Adaeze Nwosu</div><div class="testi-role">Fashion Boutique — Abuja</div></div></div></div>
+      <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-text">"The AI scraper is wild. I imported 80 products from Jumia in 10 minutes. My online store was live the same afternoon."</div><div class="testi-author"><div class="testi-avatar">E</div><div><div class="testi-name">Emmanuel Adeyemi</div><div class="testi-role">General Merchandise — Ibadan</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-band-content">
+    <h2>Ready to grow<br>your business?</h2>
+    <p>Join 2,400+ Nigerian businesses already using QuickCart. Start free today.</p>
+    <button class="btn-white" onclick="openModal('register')">Start 14-Day Free Trial →</button>
+    <p style="margin-top:16px;font-size:12px;color:rgba(255,255,255,.5);">No credit card required · Setup in 10 minutes · Cancel anytime</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-text">QuickCart</div>
+      <p>Nigeria's smartest commerce and business management platform. Built for every entrepreneur from market stall to enterprise.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#">Online Store</a>
+      <a href="#">Point of Sale</a>
+      <a href="#">Inventory</a>
+      <a href="#">Accounting</a>
+      <a href="#">Marketing</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Blog</a>
+      <a href="#">Careers</a>
+      <a href="#">Press</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">WhatsApp Support</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 QuickCart Nigeria. All rights reserved.</span>
+    <span>Built with ❤️ for Nigerian entrepreneurs</span>
+  </div>
+</footer>
+
+<!-- FLOATING CTA -->
+<div class="floating-cta" id="floating-cta" style="display:none;">
+  <button onclick="openModal('register')">🚀 Start Free Trial</button>
+</div>
+
+<!-- REGISTER / LOGIN MODAL -->
+<div class="modal-bg" id="reg-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="reg-header">
+      <h2 id="modal-title">Create Your Store</h2>
+      <p id="modal-sub">14-day free trial · No card required</p>
+    </div>
+    <div class="reg-tabs">
+      <button class="reg-tab on" id="rtab-register" onclick="regTab('register')">Register</button>
+      <button class="reg-tab" id="rtab-login" onclick="regTab('login')">Owner Login</button>
+      <button class="reg-tab" id="rtab-staff" onclick="regTab('staff')">Staff Login</button>
+    </div>
+    <div class="reg-body">
+      <!-- REGISTER PANE -->
+      <div class="reg-pane on" id="rpane-register">
+        <div class="reg-err" id="reg-err"></div>
+        <div class="reg-success" id="reg-success"></div>
+        <div class="ff"><label>Full Name</label><input type="text" id="reg-name" placeholder="Chukwuemeka Obi"></div>
+        <div class="ff"><label>Email Address</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+        <div class="ff"><label>Phone (WhatsApp)</label><input type="tel" id="reg-phone" placeholder="08012345678"></div>
+        <div class="ff"><label>Business Name</label><input type="text" id="reg-biz" placeholder="Chukwu Electronics"></div>
+        <div class="ff"><label>Password</label><input type="password" id="reg-pass" placeholder="Create a strong password"></div>
+        <div style="margin-bottom:14px;">
+          <label style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;display:block;margin-bottom:8px;">Choose Plan</label>
+          <div class="plan-cards">
+            <div class="plan-card sel" onclick="selPlan(this,'starter')" data-plan="starter">
+              <h4>Starter</h4>
+              <p>Perfect for getting started</p>
+              <div class="price">₦31,600/mo</div>
+              <div class="trial-badge">14 days free</div>
+            </div>
+            <div class="plan-card" onclick="selPlan(this,'pro')" data-plan="pro">
+              <h4>Pro ⭐</h4>
+              <p>For growing businesses</p>
+              <div class="price">₦66,360/mo</div>
+              <div class="trial-badge">14 days free</div>
+            </div>
+          </div>
+        </div>
+        <button class="reg-cta" onclick="doRegister()">Create My Store Free →</button>
+        <p style="text-align:center;font-size:11px;color:#aaa;margin-top:12px;">By registering you agree to our <a href="#" style="color:var(--accent);">Terms of Service</a></p>
+      </div>
+      <!-- LOGIN PANE -->
+      <div class="reg-pane" id="rpane-login">
+        <div class="reg-err" id="login-err"></div>
+        <div class="ff"><label>Email or Username</label><input type="text" id="login-user" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="ff"><label>Password</label><input type="password" id="login-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="reg-cta" onclick="doLogin()">Log In →</button>
+        <div class="divider">or</div>
+        <div style="text-align:center;">
+          <a onclick="showForgotModal()" style="font-size:12px;color:var(--accent);cursor:pointer;">Forgot your password?</a>
+        </div>
+      </div>
+      <!-- STAFF LOGIN PANE -->
+      <div class="reg-pane" id="rpane-staff">
+        <div class="reg-err" id="staff-err"></div>
+        <div class="ff"><label>Company ID (store email)</label><input type="text" id="staff-company" placeholder="boss@company.com" autocapitalize="off" onkeydown="if(event.key==='Enter')doStaffLogin()"></div>
+        <div class="ff"><label>Staff Username</label><input type="text" id="staff-user" placeholder="Username your boss created" autocapitalize="off" onkeydown="if(event.key==='Enter')doStaffLogin()"></div>
+        <div class="ff"><label>Password</label><input type="password" id="staff-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doStaffLogin()"></div>
+        <button class="reg-cta" onclick="doStaffLogin()">Staff Log In →</button>
+        <p style="text-align:center;font-size:11px;color:#aaa;margin-top:12px;">Company ID is the email your boss used to subscribe. Ask your boss if you don't know it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-bg" id="forgot-modal">
+  <div class="modal" style="max-width:400px;">
+    <button class="modal-close" onclick="document.getElementById('forgot-modal').classList.remove('open')">✕</button>
+    <div class="reg-header"><h2>Reset Password</h2><p>Enter your email to get a reset link</p></div>
+    <div class="reg-body">
+      <div class="reg-err" id="forgot-err2"></div>
+      <div class="reg-success" id="forgot-success2"></div>
+      <div class="ff"><label>Email Address</label><input type="email" id="forgot-email2" placeholder="your@email.com" onkeydown="if(event.key==='Enter')sendForgot()"></div>
+      <button class="reg-cta" onclick="sendForgot()">Send Reset Link →</button>
+      <div style="text-align:center;margin-top:12px;"><a onclick="document.getElementById('forgot-modal').classList.remove('open');document.getElementById('reg-modal').classList.add('open');" style="font-size:12px;color:var(--accent);cursor:pointer;">← Back to Login</a></div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes card-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}  }
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+</style>
+
+<script>
+var FIREBASE_ROOT='https://sneakerai-c96f0-default-rtdb.firebaseio.com';
+var USERS_DB=FIREBASE_ROOT+'/users';
+var _selPlan='starter';
+
+
+// ─── SCROLL NAV ───────────────────────────────────────────────────
+window.addEventListener('scroll',function(){
+  var nav=document.getElementById('main-nav');
+  nav.classList.toggle('scrolled',window.scrollY>40);
+  var fc=document.getElementById('floating-cta');
+  if(fc)fc.style.display=window.scrollY>400?'block':'none';
+});
+
+// ─── SCROLL REVEAL ────────────────────────────────────────────────
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+
+// ─── MODULE TABS ─────────────────────────────────────────────────
+function modTab(name,el){
+  document.querySelectorAll('.mod-tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.mod-pane').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+  var pane=document.getElementById('mod-'+name);
+  if(pane)pane.classList.add('on');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────
+function openModal(tab){
+  document.getElementById('reg-modal').classList.add('open');
+  regTab(tab||'register');
+}
+function closeModal(){document.getElementById('reg-modal').classList.remove('open');}
+document.getElementById('reg-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+function regTab(name){
+  document.querySelectorAll('.reg-tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.reg-pane').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('rtab-'+name).classList.add('on');
+  document.getElementById('rpane-'+name).classList.add('on');
+  var title=document.getElementById('modal-title');
+  var sub=document.getElementById('modal-sub');
+  if(name==='login'){if(title)title.textContent='Owner Login';if(sub)sub.textContent='Log in to your QuickCart dashboard';}
+  else if(name==='staff'){if(title)title.textContent='Staff Login';if(sub)sub.textContent='Sign in with your company ID and staff account';}
+  else{if(title)title.textContent='Create Your Store';if(sub)sub.textContent='14-day free trial · No card required';}
+}
+
+function selPlan(el,plan){
+  _selPlan=plan;
+  document.querySelectorAll('.plan-card').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+}
+
+// ─── REGISTER ────────────────────────────────────────────────────
+async function doRegister(){
+  var name=document.getElementById('reg-name').value.trim();
+  var email=document.getElementById('reg-email').value.trim();
+  var phone=document.getElementById('reg-phone').value.trim();
+  var biz=document.getElementById('reg-biz').value.trim();
+  var pass=document.getElementById('reg-pass').value;
+  var errEl=document.getElementById('reg-err');
+  var sucEl=document.getElementById('reg-success');
+  errEl.style.display='none';sucEl.style.display='none';
+  if(!name||!email||!pass||!biz){errEl.textContent='Please fill in all required fields.';errEl.style.display='block';return;}
+  if(!email.includes('@')){errEl.textContent='Please enter a valid email.';errEl.style.display='block';return;}
+  if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';errEl.style.display='block';return;}
+  var btn=document.querySelector('#rpane-register .reg-cta');
+  btn.disabled=true;btn.textContent='Creating your store…';
+  try{
+    // Check if email already exists
+    var r=await fetch(USERS_DB+'.json').then(function(r){return r.json();}).catch(function(){return null;});
+    if(r){
+      var existing=Object.values(r).find(function(u){return (u.email||'').toLowerCase()===email.toLowerCase();});
+      if(existing){errEl.textContent='An account with this email already exists. Please log in.';errEl.style.display='block';btn.disabled=false;btn.textContent='Create My Store Free →';return;}
+    }
+    // Create username from biz name
+    var username=biz.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/__+/g,'_').slice(0,20)+'_'+Date.now().toString(36).slice(-4);
+    var now=new Date();
+    var trialEnd=new Date(now.getTime()+14*86400000).toISOString();
+    var userData={
+      name:name,email:email,phone:phone,
+      businessName:biz,username:username,
+      password:btoa(pass),
+      plan:_selPlan,status:'trial',
+      trialEnds:trialEnd,
+      createdAt:now.toISOString(),
+      source:'landing'
+    };
+    var key='user_'+username;
+    await fetch(USERS_DB+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(userData)});
+    // Init their local DB store
+    if(window.indexedDB){
+      var dbName='qc_store_'+email.replace(/[^a-zA-Z0-9]/g,'_');
+      var req=indexedDB.open(dbName,1);
+      req.onupgradeneeded=function(e){var db=e.target.result;['products','orders','settings','meta'].forEach(function(s){if(!db.objectStoreNames.contains(s))db.createObjectStore(s,{keyPath:'_key'});});};
+      req.onsuccess=function(e){var db=e.target.result;var tx=db.transaction('meta','readwrite');tx.objectStore('meta').put({_key:'info',email:email,businessName:biz,createdAt:now.toISOString(),plan:_selPlan});};
+    }
+    sucEl.innerHTML='🎉 <strong>Your store is ready!</strong> Taking you to activate your plan…';
+    sucEl.style.display='block';
+    // Auto login and redirect to payment
+    setTimeout(function(){
+      QCDB.clearSession();
+      localStorage.setItem('qc_logged_user',username);
+      localStorage.setItem('qc_sub_plan',_selPlan);
+      localStorage.setItem('qc_sub_email',email);
+      localStorage.setItem('qc_biz_name',biz);
+      qcGo('/payment');
+    },1800);
+  }catch(e){errEl.textContent='Registration failed. Please check your connection and try again.';errEl.style.display='block';}
+  btn.disabled=false;btn.textContent='Create My Store Free →';
+}
+
+// ─── LOGIN ───────────────────────────────────────────────────────
+async function doLogin(){
+  var user=document.getElementById('login-user').value.trim();
+  var pass=document.getElementById('login-pass').value;
+  var errEl=document.getElementById('login-err');
+  errEl.style.display='none';
+  if(!user||!pass){errEl.textContent='Please enter your email and password.';errEl.style.display='block';return;}
+  var btn=document.querySelector('#rpane-login .reg-cta');
+  btn.disabled=true;btn.textContent='Logging in…';
+  // Superadmin shortcut
+  if((user==='admin')&&pass==='admin'){localStorage.setItem('qc_logged_user','admin');localStorage.setItem('qc_sub_plan','premium');localStorage.setItem('qc_sub_email','admin@quickcart.ng');qcGo('/dashboard');return;}
+  try{
+    var r=await fetch(USERS_DB+'.json');var data=await r.json();
+    if(data){
+      var entries=Object.entries(data);
+      var match=null;
+      for(var i=0;i<entries.length;i++){
+        var u=entries[i][1];
+        if(((u.email||'').toLowerCase()===user.toLowerCase()||(u.username||'').toLowerCase()===user.toLowerCase())&&u.password===btoa(pass)){match=u;break;}
+      }
+      if(match&&match.isStaff){errEl.textContent='This is a staff account. Please use the Staff Login tab.';errEl.style.display='block';btn.disabled=false;btn.textContent='Log In →';return;}
+      if(match){
+        var now=new Date();
+        var trialOk=match.trialEnds&&new Date(match.trialEnds)>now;
+        var subOk=match.subExpires&&new Date(match.subExpires)>now;
+        if(!trialOk&&!subOk&&match.status!=='active'){errEl.textContent='Your subscription has expired. Please renew to continue.';errEl.style.display='block';btn.disabled=false;btn.textContent='Log In →';return;}
+        localStorage.setItem('qc_logged_user',match.username||match.email);
+        localStorage.setItem('qc_sub_plan',match.plan||'starter');
+        localStorage.setItem('qc_sub_email',match.email||'');
+        localStorage.setItem('qc_biz_name',match.businessName||'');
+        QCDB.setSession(match);
+        qcGo('/dashboard');return;
+      }
+    }
+    errEl.textContent='Invalid email or password. Please try again.';errEl.style.display='block';
+  }catch(e){errEl.textContent='Login error. Check your connection.';errEl.style.display='block';}
+  btn.disabled=false;btn.textContent='Log In →';
+}
+
+// ─── STAFF LOGIN ─────────────────────────────────────────────────
+async function doStaffLogin(){
+  var errEl=document.getElementById('staff-err');errEl.style.display='none';
+  var btn=document.querySelector('#rpane-staff .reg-cta');
+  btn.disabled=true;btn.textContent='Logging in…';
+  var res=await QCDB.staffLogin(document.getElementById('staff-company').value,document.getElementById('staff-user').value,document.getElementById('staff-pass').value);
+  if(!res.ok){errEl.textContent=res.msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Staff Log In →';return;}
+  QCDB.finishStaffLogin(res);
+  try{sessionStorage.removeItem('qc_landed');}catch(e){}
+  qcGo('/dashboard');
+}
+
+// ─── NAVIGATION HELPER (works both standalone and inside SPA router) ─
+function qcGo(path){
+  // If running inside the SPA router iframe
+  if(window.parent && window.parent !== window && window.parent.qcNavigate){
+    window.parent.qcNavigate(path);
+  } else {
+    // Standalone fallback
+    var map={'/dashboard':'admin.html','/pos':'pos.html','/store':'store.html','/':'landing.html'};
+    window.location.href = map[path] || path.replace('/','') + '.html';
+  }
+}
+
+// ─── FORGOT PASSWORD ─────────────────────────────────────────────
+function showForgotModal(){
+  document.getElementById('reg-modal').classList.remove('open');
+  document.getElementById('forgot-modal').classList.add('open');
+}
+async function sendForgot(){
+  var email=(document.getElementById('forgot-email2').value||'').trim();
+  var errEl=document.getElementById('forgot-err2');var sucEl=document.getElementById('forgot-success2');
+  errEl.style.display='none';sucEl.style.display='none';
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email.';errEl.style.display='block';return;}
+  var btn=document.querySelector('#forgot-modal .reg-cta');
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    var r=await fetch(USERS_DB+'.json');var data=await r.json();
+    var userKey=null,userData=null;
+    if(data){Object.entries(data).forEach(function(e){if((e[1].email||'').toLowerCase()===email.toLowerCase()){userKey=e[0];userData=e[1];}});}
+    var token=btoa(email+'::'+Date.now()+'::'+Math.random()).replace(/[^a-zA-Z0-9]/g,'').slice(0,28);
+    if(userKey){
+      await fetch(USERS_DB+'/'+userKey+'/resetToken.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,expires:new Date(Date.now()+3600000).toISOString()})});
+    }
+    var baseUrl=window.parent&&window.parent!==window?window.parent.location.origin+'/':window.location.origin+'/';
+    var resetUrl=baseUrl+'?reset_token='+token+'&reset_email='+encodeURIComponent(email);
+    var mailBody='Hello '+((userData&&userData.name)||'')+',%0A%0AClick below to reset your QuickCart password (expires in 1 hour):%0A%0A'+encodeURIComponent(resetUrl)+'%0A%0AQuickCart Team';
+    window.open('mailto:'+encodeURIComponent(email)+'?subject=QuickCart+Password+Reset&body='+mailBody);
+    sucEl.innerHTML='✅ Reset link sent! <small style="display:block;margin-top:4px;color:#888;">Didn\'t get it? Copy: <a href="'+resetUrl+'" style="color:var(--accent);word-break:break-all;">Reset Link</a></small>';
+    sucEl.style.display='block';
+  }catch(e){errEl.textContent='Error. Please try again.';errEl.style.display='block';}
+  btn.disabled=false;btn.textContent='Send Reset Link →';
+}
+
+// ─── CHECK IF ALREADY LOGGED IN ───────────────────────────────────
+(function(){
+  var u=localStorage.getItem('qc_logged_user');
+  var p=localStorage.getItem('qc_sub_plan');
+  if(u&&p){
+    var navRight=document.querySelector('.nav-right');
+    if(navRight){
+      navRight.innerHTML='<button onclick="qcGo(\'/dashboard\')" style="background:var(--accent);color:#fff;padding:10px 22px;font-size:12px;font-weight:700;border:none;letter-spacing:-.01em;cursor:pointer;">Go to Dashboard →</button>';
+    }
+  }
+  // Listen for messages from parent router
+  window.addEventListener('message',function(e){
+    if(e.data&&e.data.action==='openLogin') openModal('login');
+    if(e.data&&e.data.action==='openRegister') openModal('register');
+    if(e.data&&e.data.action==='showForgot'){openModal('login');setTimeout(showForgotModal,200);}
+  });
+  // Tell parent our title
+  if(window.parent&&window.parent!==window) window.parent.postMessage({title:'Home'},'*');
+})();
+
+// ─── URL PARAMS (reset token) ──────────────────────────────────────
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  if(params.get('reset_token')){qcGo('/dashboard?reset_token='+params.get('reset_token')+'&reset_email='+params.get('reset_email'));}
+})();
+</script>
+</body>
+</html>
